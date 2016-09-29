@@ -1,0 +1,42 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/home/wgw/Documents/StatMs/stat8053/Stat8053_5187830_Weng/" . "HW/")
+ ("/home/wgw/Documents/StatMs/stat8053/" . "Stat8053_5187830_Weng/")
+ ("/home/wgw/Documents/StatMs/" . "stat8053/")
+ ("/home/wgw/Documents/" . "StatMs/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "/home/wgw/"
+ "/home/wgw/Documents/StatMs/stat8053/Stat8053_5187830_Weng/HW/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ "tes.py"
+ "#test.py#"
+ "test.py"
+ "hw2.tex"
+ "hw1.tex"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/home/wgw/" (22509 38300 346348 505000) ".gksu.lock" ".bash_profile" ".thumbnails/" ".psensor/" ".jupyter/" ".dropbox-dist/" ".pki/" ".continuum/" "Videos/" ".Renviron" ".Xdefaults" ".bash_history" "./" ".emacs.d/" ".xsession-errors" ".texlive2016/" ".python_history" ".dmrc" "tes.py" ".Rhistory" "lib/" ".cache/" ".my_config/" ".xscreensaver" ".mozilla/" ".gitconfig" ".bashrc" "Desktop/" ".gnome2/" ".bash_logout" ".thunderbird/" ".bashrc-anaconda2.bak" ".ipython/" ".xsession-errors.old" ".dropbox/" ".ssh/" ".profile" "Public/" "../" ".lesshst" "Downloads/" ".gnome2_private/" ".sbd/" ".sunpinyin/" "anaconda2/" ".config/" ".presage/" ".xinputrc" ".ICEauthority" ".conda/" ".sudo_as_admin_successful" ".rstudio-desktop/" ".templates/" ".viminfo" ".gnupg/" "Templates/" ".gconf/" "Music/" "Documents/" ".dbus/" ".gnome/" "Pictures/" ".Xauthority" ".wget-hsts" ".vimrc" "Dropbox/" ".local/" ".purple/")
+
+ ("/home/wgw/Documents/StatMs/stat8053/Stat8053_5187830_Weng/HW/" (22504 35012 206953 364000) "./" "hw1.log" "hw2.log" "hw1.aux" "../" "hw2.pdf" "hw1.pdf" "hw2.tex" "hw1.tex" "hw2.aux")
+
+ ("/home/wgw/Documents/StatMs/stat8053/Stat8053_5187830_Weng/" (22504 35288 382138 517000) "Paper/" "./" ".git/" ".gitignore" "../" "README" "HW/")
+
+ ("/home/wgw/Documents/StatMs/stat8053/" (22508 11002 240467 64000) "ACSDataAccess_09_05_16.pdf" "Stat8053_5187830_Weng/" "./" "hw1.log" "ds117/" "NeuroimageDataAccess_09_05_16.pdf" "DATA/" "hw1.aux" "../" "progit-en.1084.pdf" "hw1.pdf" "demo-checkpoint.ipynb" "GitHub_Setting_09_05_16.pdf" "hw1.tex" "Simple-Python-Examples/" "_region_.tex")
+
+ ("/home/wgw/Documents/StatMs/" (22509 35539 20949 772000) "stat8053/" "stat8931geyer/" "./" "stat8111/" "math8651/" "stat8801/" "grad5105/" "stat3011/" "stat8051/" "Qualify/" "._.DS_Store" "stat8052/" ".DS_Store" "../" "._Qualify" "math8652/" "ee5239/" "machinelearning/" "stat8112/" "emacs.d/" "._Qualify.zip")
+
+ ("/home/wgw/Documents/" (22509 35442 77570 133000) "./" "StudyMaterial/" "../" "StatMs/")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t
