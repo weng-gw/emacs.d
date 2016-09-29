@@ -1,0 +1,8 @@
+a=[1,2],4,5]
+def mysum(x):
+    s=0
+    for i in x:
+        s+=i
+    return(s)
+
+b=mysum(a)

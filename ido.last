@@ -2,30 +2,43 @@
 
 ;; ----- ido-last-directory-list -----
 (
+ ("/home/wgw/Documents/StudyMaterial/course/" . "python/")
+ ("/home/wgw/Documents/StudyMaterial/" . "course/")
+ ("/home/" . "wgw/")
  ("/home/wgw/Documents/StatMs/stat8053/Stat8053_5187830_Weng/" . "HW/")
  ("/home/wgw/Documents/StatMs/stat8053/" . "Stat8053_5187830_Weng/")
  ("/home/wgw/Documents/StatMs/" . "stat8053/")
- ("/home/wgw/Documents/" . "StatMs/")
+ ("/home/wgw/Documents/" . "StudyMaterial/")
 )
 
 ;; ----- ido-work-directory-list -----
 (
  "/home/wgw/"
+ "/home/wgw/Documents/StudyMaterial/course/python/"
  "/home/wgw/Documents/StatMs/stat8053/Stat8053_5187830_Weng/HW/"
 )
 
 ;; ----- ido-work-file-list -----
 (
+ "test.py"
+ "ass2-2.py"
  "tes.py"
  "#test.py#"
- "test.py"
  "hw2.tex"
  "hw1.tex"
 )
 
 ;; ----- ido-dir-file-cache -----
 (
- ("/home/wgw/" (22509 38300 346348 505000) ".gksu.lock" ".bash_profile" ".thumbnails/" ".psensor/" ".jupyter/" ".dropbox-dist/" ".pki/" ".continuum/" "Videos/" ".Renviron" ".Xdefaults" ".bash_history" "./" ".emacs.d/" ".xsession-errors" ".texlive2016/" ".python_history" ".dmrc" "tes.py" ".Rhistory" "lib/" ".cache/" ".my_config/" ".xscreensaver" ".mozilla/" ".gitconfig" ".bashrc" "Desktop/" ".gnome2/" ".bash_logout" ".thunderbird/" ".bashrc-anaconda2.bak" ".ipython/" ".xsession-errors.old" ".dropbox/" ".ssh/" ".profile" "Public/" "../" ".lesshst" "Downloads/" ".gnome2_private/" ".sbd/" ".sunpinyin/" "anaconda2/" ".config/" ".presage/" ".xinputrc" ".ICEauthority" ".conda/" ".sudo_as_admin_successful" ".rstudio-desktop/" ".templates/" ".viminfo" ".gnupg/" "Templates/" ".gconf/" "Music/" "Documents/" ".dbus/" ".gnome/" "Pictures/" ".Xauthority" ".wget-hsts" ".vimrc" "Dropbox/" ".local/" ".purple/")
+ ("/home/wgw/" (22509 41296 157095 920000) ".gksu.lock" ".bash_profile" ".thumbnails/" ".psensor/" ".jupyter/" ".dropbox-dist/" ".pki/" ".continuum/" "Videos/" ".Renviron" ".Xdefaults" ".bash_history" "./" ".emacs.d/" "test.py" ".xsession-errors" ".texlive2016/" ".python_history" ".dmrc" ".Rhistory" "lib/" ".cache/" ".my_config/" ".xscreensaver" ".mozilla/" ".gitconfig" ".bashrc" "Desktop/" ".gnome2/" ".bash_logout" ".thunderbird/" ".bashrc-anaconda2.bak" ".ipython/" ".xsession-errors.old" ".dropbox/" ".ssh/" ".profile" "Public/" "../" ".lesshst" "Downloads/" ".gnome2_private/" ".sbd/" ".sunpinyin/" "anaconda2/" ".config/" ".presage/" ".xinputrc" ".ICEauthority" ".conda/" ".sudo_as_admin_successful" ".rstudio-desktop/" ".templates/" ".viminfo" ".gnupg/" "Templates/" ".gconf/" "Music/" "Documents/" ".dbus/" ".gnome/" "Pictures/" ".Xauthority" ".wget-hsts" ".vimrc" "Dropbox/" ".local/" ".purple/")
+
+ ("/home/wgw/Documents/StudyMaterial/course/python/" (22509 41013 483393 899000) "hello.png" "./" "._run.png" "._hello.png" ".Rhistory" "hello.py" "../" "run.png" "ass2-2.py")
+
+ ("/home/wgw/Documents/StudyMaterial/course/" (22428 8712 210482 395000) "./" "rprogram/" "._.DS_Store" ".DS_Store" "../" "python/")
+
+ ("/home/wgw/Documents/StudyMaterial/" (22147 20450 0 0) "Textbook/" "Paper/" "course/" "./" "._.DS_Store" ".DS_Store" "../" "Note/" "UNIX/")
+
+ ("/home/" (22285 22303 0 0) "./" "../" "lost+found/" "wgw/")
 
  ("/home/wgw/Documents/StatMs/stat8053/Stat8053_5187830_Weng/HW/" (22504 35012 206953 364000) "./" "hw1.log" "hw2.log" "hw1.aux" "../" "hw2.pdf" "hw1.pdf" "hw2.tex" "hw1.tex" "hw2.aux")
 

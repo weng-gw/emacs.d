@@ -1,5 +1,7 @@
 ;;; -*- coding: utf-8 -*-
-(("/home/wgw/"
+(("/home/wgw/test.py" . 7)
+ ("/home/wgw/Documents/StudyMaterial/course/python/ass2-2.py" . 54)
+ ("/home/wgw/"
   (dired-filename . "/home/wgw/.texlive2016"))
  ("/home/wgw/.emacs.d/elpa/py-autopep8-20160925.352/py-autopep8-autoloads.el" . 639)
  ("/home/wgw/.emacs.d/elpa/flycheck-20160929.1300/flycheck-autoloads.el" . 8381)
