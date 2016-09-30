@@ -9,8 +9,9 @@
 					  elpy
 					  flycheck
 					  py-autopep8
-					  ess
-					  auctex))
+					  auto-complete
+					  auctex
+					  ess))
 
 
 (add-to-list 'package-archives
@@ -28,6 +29,7 @@
 
 ;; BASIC CUSTOMIZATION
 ;;----------------------------------------------------
+(server-start)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -38,6 +40,7 @@
 (set-default-font "Monospace-16") ;; set font and font size
 (setq-default auto-fill-function 'do-auto-fill) ;; enable auto-fill globally
 (fset 'yes-or-no-p 'y-or-n-p)
+(time-stamp)
 ;;PYTHON CONFIGURATION
 ;;-----------------------------------------------------
 
@@ -58,7 +61,7 @@
 ;; ESS CONFIGURATION
 ;;-----------------------------------------------------
 (require 'ess-site)
-
+(setq ess-use-auto-complete 'script-only)
 ;; AUCTEX CONFIGURATION
 ;;-----------------------------------------------------
 (load "auctex.el" nil t t)
