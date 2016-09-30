@@ -68,7 +68,7 @@
 		  (lambda()
 			(latex-math-mode 1)
 			(add-to-list
-			  'TeX-command-list' ("XeLaTeX" "%`xelatex%(mode)%' %t" Tex-run-Tex nil t))
-			(setq Tex-command-default "XeLaTeX")
-			(setq Tex-show-compilation t)))
+			  'TeX-command-list' ("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-Tex nil t))
+			(setq TeX-command-default "XeLaTeX")
+			(setq TeX-show-compilation t)))
 ;; init.el ends here
