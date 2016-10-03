@@ -11,7 +11,8 @@
 					  py-autopep8
 					  auto-complete
 					  auctex
-					  ess))
+					  ess
+					  magit))
 
 
 (add-to-list 'package-archives
