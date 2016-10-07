@@ -58,6 +58,10 @@
 (require 'py-autopep8)
 (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
 
+;; setup for ein mode
+(require 'ein)
+(setq ein:use-auto-complete-superpack t); enable auto complete, hit Tab
+(setq ein:cell-traceback-level 50)
 
 ;; ESS CONFIGURATION
 ;;-----------------------------------------------------
