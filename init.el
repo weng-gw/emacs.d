@@ -38,7 +38,7 @@
 (setq inhibit-startup-message t) ;; hide the startup message
 (load-theme 'material t) ;; load material theme
 (global-linum-mode t) ;; enable line numbers globally
-(set-default-font "Monospace-16") ;; set font and font size
+(set-default-font "Monospace-14") ;; set font and font size
 (setq-default auto-fill-function 'do-auto-fill) ;; enable auto-fill globally
 (fset 'yes-or-no-p 'y-or-n-p)
 (time-stamp)
@@ -61,6 +61,7 @@
 ;; setup for ein mode
 (require 'ein)
 (setq ein:use-auto-complete-superpack t); enable auto complete, hit Tab
+(setq ein:complete-on-dot nil)
 (setq ein:cell-traceback-level 50)
 
 ;; ESS CONFIGURATION
