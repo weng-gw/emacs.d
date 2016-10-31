@@ -42,6 +42,7 @@
 (setq-default auto-fill-function 'do-auto-fill) ;; enable auto-fill globally
 (fset 'yes-or-no-p 'y-or-n-p)
 (time-stamp)
+(show-paren-mode -1)
 ;;PYTHON CONFIGURATION
 ;;-----------------------------------------------------
 
