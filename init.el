@@ -31,6 +31,7 @@
 ;; BASIC CUSTOMIZATION
 ;;----------------------------------------------------
 (server-start)
+(add-to-list 'load-path "~/.emacs.d/lisp/")
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -82,4 +83,9 @@
 			(setq TeX-command-default "XeLaTeX")
 			(setq TeX-show-compilation t)))
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+
+;; FORTRAN/C CONFIGURATION
+;;----------------------------------------------------
+(require 'cc-conf)
+(require 'fortran-conf)
 ;; init.el ends here
