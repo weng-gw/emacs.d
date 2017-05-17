@@ -42,7 +42,6 @@
 (set-default-font "Monospace-14") ;; set font and font size
 (setq-default auto-fill-function 'do-auto-fill) ;; enable auto-fill globally
 (fset 'yes-or-no-p 'y-or-n-p)
-(time-stamp)
 (show-paren-mode 1)
 (setq backup-directory-alist `(("." . "~/.emacs.d/save"))) 
 ;;use common backup dir
@@ -50,6 +49,10 @@
 	  kept-new-versions 6
 	  kept-old-versions 2
 	  version-control t)
+(time-stamp)
+(add-hook 'write-file-hooks 'time-stamp)
+(require 'template)
+(template-initialize)
 ;;PYTHON CONFIGURATION
 ;;-----------------------------------------------------
 
@@ -92,6 +95,6 @@
 (setq ess-swv-processor (quote knitr))
 ;; FORTRAN/C CONFIGURATION
 ;;----------------------------------------------------
-(require 'cc-conf)
+;(require 'cc-conf)
 (require 'fortran-conf)
 ;; init.el ends here
