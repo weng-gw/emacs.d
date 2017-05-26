@@ -12,7 +12,11 @@
 					  auto-complete
 					  auctex
 					  ess
-					  magit))
+					  magit
+					  auto-complete
+					  polymode
+					  window-numbering
+					   ))
 
 
 (add-to-list 'package-archives
@@ -53,6 +57,22 @@
 (add-hook 'write-file-hooks 'time-stamp)
 (require 'template)
 (template-initialize)
+(require 'window-numbering)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(window-numbering-face ((t (:foreground "DeepPink" : underline "DeepPink" :weight bold))) t))
+(window-numbering-mode 1)
+
+;;ORG MODE CONFIGURATION
+;;---------------------------------------------------
+(setq org-log-done 'time)
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-cb" 'org-iswitchb)
 ;;PYTHON CONFIGURATION
 ;;-----------------------------------------------------
 
@@ -74,11 +94,14 @@
 (setq ein:use-auto-complete-superpack t); enable auto complete, hit Tab
 (setq ein:complete-on-dot nil)
 (setq ein:cell-traceback-level 50)
-
 ;; ESS CONFIGURATION
 ;;-----------------------------------------------------
 (require 'ess-site)
-(setq ess-use-auto-complete 'script-only)
+;; set for ess autocomplete
+(require 'auto-complete)
+(require 'auto-complete-config)
+(ac-config-default)
+(setq ess-use-auto-complete t)
 ;; AUCTEX CONFIGURATION
 ;;-----------------------------------------------------
 (load "auctex.el" nil t t)
@@ -97,4 +120,23 @@
 ;;----------------------------------------------------
 ;(require 'cc-conf)
 (require 'fortran-conf)
+(add-hook 'c-mode-hook 'hs-minor-mode)
+;;polymode Configuration
+;;----------------------------------------------------
+;(require 'poly-R)
+;(require 'poly-markdown)
+;(require 'polymode-configuration)
+;;MARKDOWN
+;(add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
+;; R modes
+;(add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
+;(add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
+;(add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode)) 
 ;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-agenda-files (quote ("~/.emacs.d/todo/todo.org")))
+ '(template-use-package t nil (template)))
