@@ -1,38 +1,49 @@
-%%% TEMPLATE.tex.tpl --- (>>>POINT<<<)
+%%%% TEMPLATE.tex.tpl --- (>>>POINT<<<)
 %%% Time-stamp: < >
 %% Author: (>>>AUTHOR<<<)
 %% Version: $Id: (>>>FILE<<<),v 0.0 (>>>DATE<<<) (>>>TIME<<<) (>>>LOGIN_NAME<<<) Exp$
 %%\revision$Header: (>>>DIR<<<)(>>>FILE<<<),v 0.0 (>>>VC_DATE<<<) (>>>LOGIN_NAME<<<) Exp$
-\documentclass[a4paper,11pt]{article}
-%%%--------------Setting On Chinese---------------
-\usepackage{xeCJK}
-\setCJKmainfont[BoldFont={SimHei}]{SimSun}
-\setCJKsansfont{SimHei}
-\usepackage{zhspacing}
-\usepackage{indentfirst}
-%%%-----------------------------------------------
-\usepackage{listings}
-\usepackage{amssymb}
-\usepackage{subfigure}
-\usepackage[tbtags]{amsmath}
-\usepackage{zhspacing}
-\usepackage{titlesec}
-\linespread{1.5}
-\usepackage[top=1in,bottom=1in,left=1.25in,right=1.25in]{geometry}
-\setlength{\parindent}{2em}
-\newpagestyle{main}{
-	\sethead{}{}{}
-	\setfoot{}{$\cdot$\thepage$\cdot$}{}
-	\headrule\footrule}
-\pagestyle{main}	
-\renewcommand{\contentsname}{目录}
+
+\documentclass[11pt,letterpaper,utf8]{article}
+\usepackage[centering,margin=1in]{geometry}
+%%-------------------------------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\setsansfont{Verdana}
+\setmonofont{Courier New}
+\usepackage{tabularx}
+\usepackage[round,comma]{natbib}
+\usepackage{enumitem}
+\usepackage{float}
+%%-----------------------------------------------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{ }
+\chead{}
+\rhead{ }
+\lfoot{}
+\cfoot{$\cdot$\thepage$\cdot$}
+\rfoot{ }
+%%--------------------------------------------------------------------------
+% \setlength{\parindent}{0cm}
+%%---------------------------------------------------------------------------
+\newcommand{\bb}[1]{\mathbb{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\DeclareMathOperator*{\argmin}{\arg\min}
+\DeclareMathOperator{\diag}{\text{diag}}
+\DeclareMathOperator{\var}{\text{Var}}
+\DeclareMathOperator{\cov}{\text{Cov}}
+\title{ }
+\author{Guangwei Weng}
+\date{\today}
+
 \begin{document}
-\title{}
-\author{}
 \maketitle
-\newpage
+\thispagestyle{fancy}
 
 
 \newpage
-
 \end{document}

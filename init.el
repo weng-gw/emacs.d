@@ -16,6 +16,7 @@
 					  auto-complete
 					  polymode
 					  window-numbering
+					  powerline
 					   ))
 
 
@@ -41,7 +42,8 @@
 (scroll-bar-mode -1)
 (setq column-number-mode t)
 (setq inhibit-startup-message t) ;; hide the startup message
-(load-theme 'material t) ;; load material theme
+;;(load-theme 'material t) ;; load material theme
+(load-theme 'material-light t)
 (global-linum-mode t) ;; enable line numbers globally
 (set-default-font "Monospace-14") ;; set font and font size
 (setq-default auto-fill-function 'do-auto-fill) ;; enable auto-fill globally
@@ -65,7 +67,8 @@
  ;; If there is more than one, they won't work right.
  '(window-numbering-face ((t (:foreground "DeepPink" : underline "DeepPink" :weight bold))) t))
 (window-numbering-mode 1)
-
+;(powerline-center-theme)
+;(setq powerline-default-separator 'wave)
 ;;ORG MODE CONFIGURATION
 ;;---------------------------------------------------
 (setq org-log-done 'time)
@@ -73,6 +76,7 @@
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-cb" 'org-iswitchb)
+(add-hook 'org-mode-hook 'flyspell-mode)
 ;;PYTHON CONFIGURATION
 ;;-----------------------------------------------------
 
