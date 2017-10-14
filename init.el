@@ -110,7 +110,7 @@
 ;; AUCTEX CONFIGURATION
 ;;-----------------------------------------------------
 (load "auctex.el" nil t t)
-(load "preview-latex.el" nil t t)
+;(load "preview-latex.el" nil t t)
 (setq TeX-output-view-style (quote (("^pdf$" "." "evince %o %(outpage)"))))
 (add-hook 'LaTeX-mode-hook
 		  (lambda()
