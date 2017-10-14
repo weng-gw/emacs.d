@@ -78,7 +78,7 @@
 (global-set-key "\C-cb" 'org-iswitchb)
 (add-hook 'org-mode-hook 'flyspell-mode)
 ;;PYTHON CONFIGURATION
-;;-----------------------------------------------------
+	;;-----------------------------------------------------
 
 (elpy-enable)
 (elpy-use-ipython)
@@ -90,8 +90,8 @@
   (add-hook 'elpy-mode-hook 'flycheck-mode))
 
 ;; enable autopep8 formatting on save
-(require 'py-autopep8)
-(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+;(require 'py-autopep8)
+;(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
 
 ;; setup for ein mode
 (require 'ein)
@@ -105,6 +105,7 @@
 (require 'auto-complete)
 (require 'auto-complete-config)
 (ac-config-default)
+(setq ac-modes (delq 'python-mode ac-modes))
 (setq ess-use-auto-complete t)
 ;; AUCTEX CONFIGURATION
 ;;-----------------------------------------------------
@@ -127,15 +128,15 @@
 (add-hook 'c-mode-hook 'hs-minor-mode)
 ;;polymode Configuration
 ;;----------------------------------------------------
-;(require 'poly-R)
-;(require 'poly-markdown)
-;(require 'polymode-configuration)
+(require 'poly-R)
+(require 'poly-markdown)
+(require 'polymode-configuration)
 ;;MARKDOWN
 ;(add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
 ;; R modes
 ;(add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
 ;(add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
-;(add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode)) 
+(add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode)) 
 ;; init.el ends here
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
