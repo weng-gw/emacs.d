@@ -17,6 +17,7 @@
 \usepackage[round,comma]{natbib}
 \usepackage{enumitem}
 \usepackage{float}
+\usepackage[long]{optidef}
 %%-----------------------------------------------------------------------
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -33,6 +34,7 @@
 \newcommand{\mc}[1]{\mathcal{#1}}
 \newcommand{\bs}[1]{\boldsymbol{#1}}
 \DeclareMathOperator*{\argmin}{\arg\min}
+\DeclareMathOperator*{\argmax}{argmax}
 \DeclareMathOperator{\diag}{\text{diag}}
 \DeclareMathOperator{\var}{\text{Var}}
 \DeclareMathOperator{\cov}{\text{Cov}}
