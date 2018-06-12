@@ -10,11 +10,12 @@
 					  flycheck
 					  py-autopep8
 					  auto-complete
-					  auctex
+					  ;auctex
 					  ess
 					  magit
 					  auto-complete
 					  polymode
+					  markdown-mode
 					  window-numbering
 					  powerline
 					   ))
@@ -37,6 +38,7 @@
 ;;----------------------------------------------------
 (server-start)
 (add-to-list 'load-path "~/.emacs.d/lisp/")
+(setq visible-bell t)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -46,6 +48,8 @@
 (load-theme 'material-light t)
 (global-linum-mode t) ;; enable line numbers globally
 (set-default-font "Monospace-14") ;; set font and font size
+(add-to-list 'default-frame-alist
+			 '(font . "Monospace-14")) ;; set font for new frames
 (setq-default auto-fill-function 'do-auto-fill) ;; enable auto-fill globally
 (fset 'yes-or-no-p 'y-or-n-p)
 (show-paren-mode 1)
@@ -78,10 +82,23 @@
 (global-set-key "\C-cb" 'org-iswitchb)
 (add-hook 'org-mode-hook 'flyspell-mode)
 ;;PYTHON CONFIGURATION
-	;;-----------------------------------------------------
+;;-----------------------------------------------------
 
 (elpy-enable)
-(elpy-use-ipython)
+;(elpy-use-ipython) not compatible with emacs 26, see
+;documentation
+
+;use IPython as interactive shell (recommeded)
+;(setq python-shell-interpreter "ipython"
+;	        python-shell-interpreter-args "-i --simple-prompt")
+
+;use Jupyter console as interactive shell (recommeded)
+(setq python-shell-interpreter "jupyter"
+	        python-shell-interpreter-args "console --simple-prompt"
+			      python-shell-prompt-detect-failure-warning nil)
+(add-to-list 'python-shell-completion-native-disabled-interpreters
+			              "jupyter")
+(setq elpy-rpc-backend "jedi")
 
 
 ;; use flycheck instead of flymake with elpy
@@ -90,8 +107,8 @@
   (add-hook 'elpy-mode-hook 'flycheck-mode))
 
 ;; enable autopep8 formatting on save
-;(require 'py-autopep8)
-;(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+(require 'py-autopep8)
+(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
 
 ;; setup for ein mode
 (require 'ein)
@@ -110,17 +127,21 @@
 ;; AUCTEX CONFIGURATION
 ;;-----------------------------------------------------
 (load "auctex.el" nil t t)
-;(load "preview-latex.el" nil t t)
+(load "preview-latex.el" nil t t)
 (setq TeX-output-view-style (quote (("^pdf$" "." "evince %o %(outpage)"))))
 (add-hook 'LaTeX-mode-hook
 		  (lambda()
 			(latex-math-mode 1)
 			(add-to-list
-			  'TeX-command-list' ("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t))
+			  'TeX-command-list' ("XeLaTeX" "%`xelatex -synctex=1%(mode)%' %t" TeX-run-TeX nil t))
 			(setq TeX-command-default "XeLaTeX")
 			(setq TeX-show-compilation t)))
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
 (setq ess-swv-processor (quote knitr))
+
+
+
+
 ;; FORTRAN/C CONFIGURATION
 ;;----------------------------------------------------
 ;(require 'cc-conf)
@@ -143,5 +164,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(TeX-source-correlate-method (quote ((dvi . synctex) (pdf . synctex))))
+ '(TeX-source-correlate-mode t)
+ '(TeX-source-correlate-start-server t)
  '(org-agenda-files (quote ("~/.emacs.d/todo/todo.org")))
  '(template-use-package t nil (template)))
