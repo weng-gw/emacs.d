@@ -88,7 +88,7 @@
 ;(elpy-use-ipython) not compatible with emacs 26, see
 ;documentation
 
-;use IPython as interactive shell (recommeded)
+;use IPython as interactive shell (now not recommeded)
 ;(setq python-shell-interpreter "ipython"
 ;	        python-shell-interpreter-args "-i --simple-prompt")
 
