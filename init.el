@@ -1,171 +1,115 @@
-;;init.el
-
-;; INSTALL REQUIRED PACKAGES
-;;--------------------------------------------
-
-(require 'package)
-(setq package-list '( material-theme
-					  ein
-					  elpy
-					  flycheck
-					  py-autopep8
-					  auto-complete
-					  ;auctex
-					  ess
-					  magit
-					  auto-complete
-					  polymode
-					  markdown-mode
-					  window-numbering
-					  powerline
-					   ))
-
-
-(add-to-list 'package-archives
-			 '("melpa"."https://melpa.org/packages/"))
-
 (package-initialize)
+(setq usepackage-always-ensure t)
 
-(unless package-archive-contents
-  (package-refresh-contents))
+(setq user-full-name "Guangwei Weng"
+      user-mail-address "wengx076@umn.edu")
 
-(dolist (package package-list)
-  (unless (package-installed-p package)
-	(package-install package)))
+(unless (assoc-default "melpa" package-archives)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
+(unless (assoc-default "org" package-archives)
+  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
 
 
-;; BASIC CUSTOMIZATION
-;;----------------------------------------------------
+(add-to-list 'load-path "~/.emacs.d/elisp")
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+(setq use-package-verbose t)
+(setq use-package-always-ensure t)
+(require 'use-package)
+(use-package auto-compile
+  :config (auto-compile-on-load-mode))
+(setq load-prefer-newer t)
+
+
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+
+(setq delete-old-versions -1)
+(setq version-control t)
+(setq vc-make-backup-files t)
+(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+
+(setq savehist-file "~/.emacs.d/savehist")
+(savehist-mode 1)
+(setq history-length t)
+(setq history-delete-duplicates t)
+(setq savehist-save-minibuffer-history 1)
+(setq savehist-additional-variables
+      '(kill-ring
+        search-ring
+        regexp-search-ring))
+
 (server-start)
-(add-to-list 'load-path "~/.emacs.d/lisp/")
-(setq visible-bell t)
-(menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+(display-time-mode 1)
+(setq visible-bell t)
 (setq column-number-mode t)
-(setq inhibit-startup-message t) ;; hide the startup message
-;;(load-theme 'material t) ;; load material theme
-(load-theme 'material-light t)
-(global-linum-mode t) ;; enable line numbers globally
-(set-default-font "Monospace-14") ;; set font and font size
-(add-to-list 'default-frame-alist
-			 '(font . "Monospace-14")) ;; set font for new frames
-(setq-default auto-fill-function 'do-auto-fill) ;; enable auto-fill globally
-(fset 'yes-or-no-p 'y-or-n-p)
+(setq auto-fill-mode t)
+(setq-default fill-column 80)
+(global-linum-mode t)
+(setq inhibit-startup-message t)
+(set-default-font "Monospace-14")
 (show-paren-mode 1)
-(setq backup-directory-alist `(("." . "~/.emacs.d/save"))) 
-;;use common backup dir
-(setq delete-old-versions t
-	  kept-new-versions 6
-	  kept-old-versions 2
-	  version-control t)
-(time-stamp)
-(add-hook 'write-file-hooks 'time-stamp)
-(require 'template)
-(template-initialize)
-(require 'window-numbering)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(window-numbering-face ((t (:foreground "DeepPink" : underline "DeepPink" :weight bold))) t))
+(use-package smart-mode-line)
+(fset 'yes-or-no-p 'y-or-n-p)
+(use-package window-numbering)
 (window-numbering-mode 1)
-;(powerline-center-theme)
-;(setq powerline-default-separator 'wave)
-;;ORG MODE CONFIGURATION
-;;---------------------------------------------------
-(setq org-log-done 'time)
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cc" 'org-capture)
-(global-set-key "\C-cb" 'org-iswitchb)
-(add-hook 'org-mode-hook 'flyspell-mode)
-;;PYTHON CONFIGURATION
-;;-----------------------------------------------------
+(use-package exec-path-from-shell
+  :init (exec-path-from-shell-initialize))
+(setq-default ispell-program-name "aspell")
 
-(elpy-enable)
-;(elpy-use-ipython) not compatible with emacs 26, see
-;documentation
+(use-package miniedit
+  :commands minibuffer-edit
+  :init (miniedit-install))
 
-;use IPython as interactive shell (now not recommeded)
-;(setq python-shell-interpreter "ipython"
-;	        python-shell-interpreter-args "-i --simple-prompt")
+;; (use-package material-theme
+;;   :config
+;;   (load-theme 'material t))
+(use-package hc-zenburn-theme
+  :init (load-theme 'hc-zenburn t))
 
-;use Jupyter console as interactive shell (recommeded)
-(setq python-shell-interpreter "jupyter"
-	        python-shell-interpreter-args "console --simple-prompt"
-			      python-shell-prompt-detect-failure-warning nil)
-(add-to-list 'python-shell-completion-native-disabled-interpreters
-			              "jupyter")
-(setq elpy-rpc-backend "jedi")
+(use-package ess
+  :commands ess-mode
+  )
 
+(use-package auto-complete
+  :init (ac-config-default))
 
-;; use flycheck instead of flymake with elpy
-(when (require 'flycheck nil t)
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (add-hook 'elpy-mode-hook 'flycheck-mode))
-
-;; enable autopep8 formatting on save
-(require 'py-autopep8)
-(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
-
-;; setup for ein mode
-(require 'ein)
-(setq ein:use-auto-complete-superpack t); enable auto complete, hit Tab
-(setq ein:complete-on-dot nil)
-(setq ein:cell-traceback-level 50)
-;; ESS CONFIGURATION
-;;-----------------------------------------------------
-(require 'ess-site)
-;; set for ess autocomplete
-(require 'auto-complete)
-(require 'auto-complete-config)
-(ac-config-default)
-(setq ac-modes (delq 'python-mode ac-modes))
-(setq ess-use-auto-complete t)
-;; AUCTEX CONFIGURATION
-;;-----------------------------------------------------
-(load "auctex.el" nil t t)
-(load "preview-latex.el" nil t t)
-(setq TeX-output-view-style (quote (("^pdf$" "." "evince %o %(outpage)"))))
-(add-hook 'LaTeX-mode-hook
-		  (lambda()
-			(latex-math-mode 1)
-			(add-to-list
-			  'TeX-command-list' ("XeLaTeX" "%`xelatex -synctex=1%(mode)%' %t" TeX-run-TeX nil t))
-			(setq TeX-command-default "XeLaTeX")
-			(setq TeX-show-compilation t)))
-(add-hook 'LaTeX-mode-hook 'flyspell-mode)
-(setq ess-swv-processor (quote knitr))
+(use-package auctex
+  :hook (latex-mode . flyspell-mode)
+  :init
+  (setq TeX-PDF-mode t)
+  ;;(setq Tex-output-view-style (quote (("^pdf$" "." "open %o %(outpage%)"))))
+  (setq TeX-view-program-selection '((output-pdf "Skim")))
+  (setq TeX-view-program-list
+	'(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+  (add-hook 'LaTeX-mode-hook
+	    (lambda()
+	      (latex-math-mode 1)
+	      (add-to-list
+	       'TeX-command-list '("XeLaTeX" "%`xelatex -synctex=1%(mode)%' %t" TeX-run-TeX nil t))
+	      (setq TeX-command-default "XeLaTeX")))
+  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (setq TeX-source-correlate-method 'synctex)
+  (setq TeX-source-correlate-mode t)
+  (setq TeX-source-correlate-start-server t)
+  )
 
 
-
-
-;; FORTRAN/C CONFIGURATION
-;;----------------------------------------------------
-;(require 'cc-conf)
-(require 'fortran-conf)
-(add-hook 'c-mode-hook 'hs-minor-mode)
-;;polymode Configuration
-;;----------------------------------------------------
-(require 'poly-R)
-(require 'poly-markdown)
-(require 'polymode-configuration)
-;;MARKDOWN
-;(add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
-;; R modes
-;(add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
-;(add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
-(add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode)) 
-;; init.el ends here
+(use-package magit
+  :bind ("C-c g" . magit-status))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-source-correlate-method (quote ((dvi . synctex) (pdf . synctex))))
- '(TeX-source-correlate-mode t)
- '(TeX-source-correlate-start-server t)
- '(org-agenda-files (quote ("~/.emacs.d/todo/todo.org")))
- '(template-use-package t nil (template)))
+ '(package-selected-packages
+   (quote
+    (auto-complete window-numbering use-package smart-mode-line miniedit material-theme magit hc-zenburn-theme exec-path-from-shell ess auto-compile auctex))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
