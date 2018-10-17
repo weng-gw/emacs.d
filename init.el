@@ -42,7 +42,7 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (display-time-mode 1)
-(setq visible-bell t)
+(setq visible-bell nil)
 (setq column-number-mode t)
 (setq auto-fill-mode t)
 (setq-default fill-column 80)
