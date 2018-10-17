@@ -88,7 +88,8 @@
 	      (latex-math-mode 1)
 	      (add-to-list
 	       'TeX-command-list '("XeLaTeX" "%`xelatex -synctex=1%(mode)%' %t" TeX-run-TeX nil t))
-	      (setq TeX-command-default "XeLaTeX")))
+	      (setq TeX-command-default "XeLaTeX")
+	      (setq TeX-show-compilation nil)))
   (add-hook 'LaTeX-mode-hook 'visual-line-mode)
   (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
   (setq TeX-source-correlate-method 'synctex)
