@@ -69,7 +69,7 @@
   :init (load-theme 'hc-zenburn t))
 
 (use-package ess
-  :commands ess-mode
+  :defer t
   )
 
 (use-package auto-complete
@@ -77,6 +77,7 @@
 
 ;; auctex setting for MacOS with Skim
 (use-package auctex
+  :defer t
   :hook (latex-mode . flyspell-mode)
   :init
   (setq TeX-PDF-mode t)
@@ -123,6 +124,7 @@
 
 
 (use-package magit
+  :defer t
   :bind ("C-c g" . magit-status))
 
 
