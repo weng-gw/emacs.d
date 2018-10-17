@@ -75,6 +75,7 @@
 (use-package auto-complete
   :init (ac-config-default))
 
+;; auctex setting for MacOS with Skim
 (use-package auctex
   :hook (latex-mode . flyspell-mode)
   :init
@@ -97,6 +98,40 @@
   (setq TeX-source-correlate-start-server t)
   )
 
+;; auctex setting for Linux with evince
+;; (use-package auctex
+;;   :hook (latex-mode . flyspell-mode)
+;;   :init
+;;   (setq TeX-PDF-mode t)
+;;   ;;(setq Tex-output-view-style (quote (("^pdf$" "." "open %o %(outpage%)"))))
+;;   (setq TeX-output-view-style (quote (("^pdf$" "." "evince %o %(outpage)"))))
+;;   (add-hook 'LaTeX-mode-hook
+;; 	    (lambda()
+;; 	      (latex-math-mode 1)
+;; 	      (add-to-list
+;; 	       'TeX-command-list' ("XeLaTeX" "%`xelatex -synctex=1%(mode)%' %t" TeX-run-TeX nil t))
+;; 	      (setq TeX-command-default "XeLaTeX")
+;; 	      (setq TeX-show-compilation nil)))
+;;   (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+;;   (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+;;   (setq TeX-source-correlate-method 'synctex)
+;;   (setq TeX-source-correlate-mode t)
+;;   (setq TeX-source-correlate-start-server t)
+;;   )
+
+
+
 
 (use-package magit
   :bind ("C-c g" . magit-status))
+
+
+(use-package elpy
+  :init (elpy-enable)
+  (setq python-shell-interpreter "jupyter"
+	python-shell-interpreter-args "console  --simple-prompt"
+	       python-shell-prompt-detect-failure-warning nil)
+	 (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
+	 (setq elpy-rpc-backend "jedi"))
+
+
