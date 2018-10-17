@@ -69,7 +69,7 @@
   :init (load-theme 'hc-zenburn t))
 
 (use-package ess
-  :commands ess-mode
+  :defer t
   )
 
 (use-package auto-complete
@@ -100,6 +100,7 @@
 
 ;; auctex setting for Linux with evince
 (use-package auctex
+  :defer t
   :hook (latex-mode . flyspell-mode)
   :init
   (setq TeX-PDF-mode t)
@@ -123,10 +124,12 @@
 
 
 (use-package magit
+  :defer t
   :bind ("C-c g" . magit-status))
 
 
 (use-package elpy
+  :defer t
   :init (elpy-enable)
   (setq python-shell-interpreter "jupyter"
 	python-shell-interpreter-args "console  --simple-prompt"
@@ -136,6 +139,7 @@
 
 
 (use-package ein
+  :defer t
   :init (require 'ein)
   (require 'ein-loaddefs)
   (require 'ein-notebook)
