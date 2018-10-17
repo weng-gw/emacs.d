@@ -78,8 +78,9 @@
 ;; auctex setting for MacOS with Skim
 (use-package auctex
   :defer t
-  :hook (latex-mode . flyspell-mode)
-  :config
+  ;:hook  (latex-mode . flyspell-mode)
+  :init
+  (add-hook 'latex-mode #'flyspell-mode)
   (setq TeX-PDF-mode t)
   ;;(setq Tex-output-view-style (quote (("^pdf$" "." "open %o %(outpage%)"))))
   (setq TeX-view-program-selection '((output-pdf "Skim")))
