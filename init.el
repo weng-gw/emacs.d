@@ -17,6 +17,7 @@
 (setq use-package-always-ensure t)
 (require 'use-package)
 (use-package auto-compile
+  :defer t
   :config (auto-compile-on-load-mode))
 (setq load-prefer-newer t)
 
@@ -42,7 +43,7 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (display-time-mode 1)
-(setq visible-bell t)
+(setq visible-bell nil)
 (setq column-number-mode t)
 (setq auto-fill-mode t)
 (setq-default fill-column 80)
@@ -52,28 +53,27 @@
 (show-paren-mode 1)
 (use-package smart-mode-line)
 (fset 'yes-or-no-p 'y-or-n-p)
-(use-package window-numbering)
-(window-numbering-mode 1)
+(use-package window-numbering
+  :init (window-numbering-mode 1))
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
 (setq-default ispell-program-name "aspell")
 
 (use-package miniedit
-  :commands minibuffer-edit
-  :init (miniedit-install))
+  :config (miniedit-install))
 
 ;; (use-package material-theme
 ;;   :config
 ;;   (load-theme 'material t))
 (use-package hc-zenburn-theme
-  :init (load-theme 'hc-zenburn t))
+  :config (load-theme 'hc-zenburn t))
 
 (use-package ess
   :defer t
   )
 
 (use-package auto-complete
-  :init (ac-config-default))
+  :config (ac-config-default))
 
 ;; auctex setting for MacOS with Skim
 ;; (use-package auctex
@@ -102,7 +102,7 @@
 (use-package auctex
   :defer t
   :hook (latex-mode . flyspell-mode)
-  :init
+  :config
   (setq TeX-PDF-mode t)
   ;;(setq Tex-output-view-style (quote (("^pdf$" "." "open %o %(outpage%)"))))
   (setq TeX-output-view-style (quote (("^pdf$" "." "evince %o %(outpage)"))))
@@ -130,7 +130,7 @@
 
 (use-package elpy
   :defer t
-  :init (elpy-enable)
+  :config (elpy-enable)
   (setq python-shell-interpreter "jupyter"
 	python-shell-interpreter-args "console  --simple-prompt"
 	       python-shell-prompt-detect-failure-warning nil)
@@ -140,7 +140,7 @@
 
 (use-package ein
   :defer t
-  :init (require 'ein)
+  :config (require 'ein)
   (require 'ein-loaddefs)
   (require 'ein-notebook)
   (require 'ein-subpackages)
