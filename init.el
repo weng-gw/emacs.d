@@ -43,6 +43,7 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (display-time-mode 1)
+
 (setq visible-bell nil)
 (setq column-number-mode t)
 (setq auto-fill-mode t)
@@ -58,9 +59,13 @@
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
 (setq-default ispell-program-name "aspell")
-
 (use-package miniedit
   :config (miniedit-install))
+(time-stamp)
+(add-hook 'write-file-hooks 'time-stamp)
+
+(require 'template)
+(template-initialize)
 
 ;; (use-package material-theme
 ;;   :config
