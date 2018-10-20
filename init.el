@@ -99,7 +99,7 @@
 ;;   (setq TeX-source-correlate-start-server t)
 ;;   )
 
-;; auctex setting for Linux with evince>
+;; auctex setting for Linux with evince
 (use-package auctex  
   :hook  (LaTeX-mode . flyspell-mode)
   :init
