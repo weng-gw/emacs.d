@@ -1,12 +1,12 @@
-%%% TEMPLATE.tex.tpl --- (>>>POINT<<<)
-%%% Time-stamp: <>
+%%% beamer.tpl --- (>>>POINT<<<)
+%%% Time-stamp: <2018-10-19 22:36:17 wgw>
 %% Author: (>>>LOGIN_NAME<<<)
 %% Version: $Id: (>>>FILE<<<),v 0.0 (>>>VC_DATE<<<) (>>>LOGIN_NAME<<<) Exp$
 %%\revision$Header: (>>>DIR<<<)(>>>FILE<<<),v 0.0 (>>>VC_DATE<<<) (>>>LOGIN_NAME<<<) Exp$
 
 
 \documentclass{beamer}
-\input{~/.templates/preamble_slide.tex}
+\input{/Users/wgw/.templates/preamble_slide.tex}
 \mode<presentation> {
 
 % The Beamer class comes with a number of default slide themes
