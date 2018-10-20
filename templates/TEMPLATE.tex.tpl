@@ -5,18 +5,16 @@
 %%\revision$Header: (>>>DIR<<<)(>>>FILE<<<),v 0.0 (>>>VC_DATE<<<) (>>>LOGIN_NAME<<<) Exp$
 
 \documentclass[11pt,letterpaper,utf8]{article}
+\input{~/.templates/preamble.tex}
 \usepackage[centering,margin=1in]{geometry}
 %%-------------------------------------------------------------------------------
 \usepackage[utf8]{inputenc}
-\usepackage{amsmath,amssymb,amsthm}
 \usepackage{fontspec}
 \setmainfont{Times New Roman}
 \setsansfont{Verdana}
 \setmonofont{Courier New}
 \usepackage{tabularx}
 \usepackage[round,comma]{natbib}
-\usepackage{enumitem}
-\usepackage{float}
 %%-----------------------------------------------------------------------
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -29,13 +27,7 @@
 %%--------------------------------------------------------------------------
 % \setlength{\parindent}{0cm}
 %%---------------------------------------------------------------------------
-\newcommand{\bb}[1]{\mathbb{#1}}
-\newcommand{\mc}[1]{\mathcal{#1}}
-\newcommand{\bs}[1]{\boldsymbol{#1}}
-\DeclareMathOperator*{\argmin}{\arg\min}
-\DeclareMathOperator{\diag}{\text{diag}}
-\DeclareMathOperator{\var}{\text{Var}}
-\DeclareMathOperator{\cov}{\text{Cov}}
+
 \title{ }
 \author{Guangwei Weng}
 \date{\today}

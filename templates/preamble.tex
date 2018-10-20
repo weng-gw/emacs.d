@@ -1,0 +1,437 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% combined packages and macros preamble.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %% some of my preamble 'best practices':
+
+%% package xparse allows for 'macro overloading' in a sense but i havent used
+%% it yet.
+
+%% natbib, hyperref   used right now ; have caused errors in past
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\usepackage[inline]{enumitem}
+% \usepackage{newclude}
+\usepackage{versions}
+% \usepackage{graphicx}
+% \usepackage{times}
+%\usepackage{fancyvrb}
+% \usepackage{geometry}  %% currently make geometry modifications in each
+% specific doc
+
+
+\usepackage[english]{babel}
+\usepackage{amsfonts}
+\usepackage{amstext}
+\usepackage{amsmath}
+\usepackage{amssymb,dsfont,mathtools}
+\usepackage{bbm} %% mathbb vs mathbbm?  I use bbm for indicator fns.
+\usepackage{amsthm} %% do i want/ use this correctly?
+\usepackage{epsfig, subfigure}
+%\usepackage{natbib}
+\usepackage{color}
+\RequirePackage[colorlinks,linkcolor=red,citecolor=blue,urlcolor=blue]{hyperref}
+% \RequirePackage{hypernat}
+
+% \usepackage{url}
+
+%% table packages
+% \usepackage{multirow}
+% \usepackage{booktabs}
+% \usepackage{slashbox}
+
+% \usepackage[demo]{graphicx}
+% \usepackage{caption}
+% \usepackage{subcaption}
+
+\setlength{\textwidth}{5.5in}
+\setlength{\textheight}{21cm}
+
+% \pdfoutput=1
+% \newcommand{\com}[1]{{\noindent  \color{blue}#1}}       % blue, magenta
+% \newcommand{\comC}[1]{{\noindent  \color{magenta}#1}}
+\newcommand{\KR}[1]{{\noindent  \color{red}#1}}
+\newcommand{\FB}[1]{{\noindent  \color{blue}#1}}
+
+\newcommand{\comf}[1]{{\noindent \color{blue}#1}}
+\newcommand{\remf}[1]{{\noindent \color{magenta}#1}}
+
+
+%% here here
+
+\let\proglang=\textsf
+\newcommand{\pkg}[1]{{\fontseries{b}\selectfont #1}}
+\let\code=\texttt
+
+
+\usepackage{xparse} %% multi-optional-arguments in macros.
+\usepackage{etoolbox} %% gives 'ifstrempty' command
+
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem*{theorem*}{Theorem}
+\newtheorem*{proposition*}{Proposition}
+\newtheorem*{corollary*}{Corollary}
+\newtheorem*{lemma*}{Lemma}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{remark}{Remark}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem*{definition*}{Definition}
+\newtheorem*{remark*}{Remark}
+\newtheorem*{example*}{Example}
+% \newtheorem{assumption}{Assumption}[section] %% constr approx style deals
+% % poorly with seciton numbering it seems
+%% \newtheorem{assumption}{Assumption}
+% \newtheorem{conjecture}{Conjecture}[section]
+
+\newtheorem*{assumption*}{\assumptionnumber}
+\providecommand{\assumptionnumber}{}
+\makeatletter % changes the catcode of @ to 11 from 12
+\newenvironment{assumption}[1]
+ {%
+  \renewcommand{\assumptionnumber}{Assumption #1}%
+  \begin{assumption*}%
+  \protected@edef\@currentlabel{#1}%
+ }
+ {%
+  \end{assumption*}
+ }
+\makeatother % changes the catcode of @ back to 12
+
+
+%\newcommand{\prf}{\begin{proof}{Proof}}
+
+
+
+
+
+
+
+% --------------------------------------------------------------%
+% COMMENTS COLORS
+
+\usepackage[usenames,dvipsnames]{xcolor}
+
+\newcommand{\remC}[1]{{\noindent \color{Green}#1}}
+
+
+\newcommand{\comC}[1]{{\noindent  \color{Maroon}#1}}       % blue, magenta
+% \newcommand{\comJ}[1]{{\noindent   \color{green}#1}}       % blue, magenta
+\newcommand{\comF}[1]{{\noindent   \color{Dandelion}#1}}       % blue, magenta
+\newcommand{\comOld}[1]{{\noindent  \color{OliveGreen}#1}}       % blue, magenta
+% potential colors ( from http://en.wikibooks.org/wiki/LaTeX/Colors):
+% Bittersweet, OliveGreen,  BurntOrange, Maroon
+% --------------------------------------------------------------%
+
+\usepackage{float}
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%% NOTE: xparse provides method to differentiate between no argument and
+%% empty argument (IfNoValueTF; use o instead of O{}).  But i'm not using
+%% that, don't want it.  In this definition, the arguemnts are sequential, so
+%% dont need to test all combinations just for the last one.
+% \NewDocumentCommand\testtt{O{}O{}O{}}{
+%   \ifstrempty{#1}{
+%     N_{[\, ]}
+%   }{
+%     \ifstrempty{#2}
+%     {MISTAKE}
+%     {\ifstrempty{#3}{MISTAKE}
+%     {N_{[\, ]} \left( {#1}, {#2}, {#3} \right)}}
+%   }
+% }
+
+% \NewDocumentCommand\Nb{O{}}{
+%   \ifstrempty{#1}{
+%     N_{[\, ]}
+%   }{
+%     N_{[\, ]}\left( {#1} \right)
+%   }
+% }
+
+% \NewDocumentCommand\Nc{O{}}{
+%   \ifstrempty{#1}{
+%     N
+%   }{
+%     N\left( {#1} \right)
+%   }
+% }
+
+% %% just have one argument; typing the commas is easy
+% \NewDocumentCommand\cC{O{}}{
+%   \ifstrempty{#1}{
+%     \mc C
+%   }{
+%     \mc C \left( {#1} \right)
+%   }
+% }
+
+
+\DeclareMathOperator{\vol}{Vol}
+\DeclareMathOperator{\Vol}{Vol}
+\DeclareMathOperator{\diam}{diam}
+\global\long\def\inv#1{\frac{1}{#1}}
+\DeclareMathOperator*{\Bias}{Bias}
+\DeclareMathOperator*{\MSE}{MSE}
+\DeclareMathOperator*{\Var}{Var}
+\DeclareMathOperator*{\tr}{tr}
+\DeclareMathOperator*{\Cov}{Cov}
+\DeclareMathOperator*{\Cor}{Cor}
+\DeclareMathOperator*{\sd}{sd}
+% \DeclareMathOperator*{\min}{min}
+% \DeclareMathOperator*{\max}{max}
+%% \mathrm is owrose than declaremathoperator
+%\newcommand{\dom}{\mathrm{dom}}
+%\newcommand{\sub}{\mathrm{sub}}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\sub}{sub}
+\DeclareMathOperator{\argmin}{argmin}
+\DeclareMathOperator{\argmax}{argmax}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%  Macros below here
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+\newcommand{\lp}{\left(} %% )
+  \newcommand{\rp}{\right)}
+\newcommand{\lb}{\left\{} %% )
+  \newcommand{\rb}{\right\}}
+\newcommand{\ls}{\left[} %% )
+  \newcommand{\rs}{\right]}
+\newcommand{\la}{\left\langle}
+\newcommand{\ra}{\right\rangle}
+\newcommand{\lv}{\left\vert}
+\newcommand{\rv}{\right\vert}
+\newcommand{\lV}{\left\Vert}
+\newcommand{\rV}{\right\Vert}
+%\newcommand{\|}{\Vert}
+
+\newcommand{\vp}{\varphi}
+\newcommand{\grad}{\nabla}
+\newcommand{\hess}{\nabla^2}
+
+
+\newcommand{\ve}[1]{\boldsymbol{#1}}
+\newcommand{\mat}[1]{\ve{#1}}
+
+%% \newcommand{\cC}{\mathcal{C}} %% see below
+\newcommand{\PP}{{\mathbb P}}
+\newcommand{\PPn}{{\mathbb P}_n}
+\newcommand{\FFn}{{\mathbb F}_n}
+\newcommand{\QQ}{{\mathbb Q}}
+\newcommand{\LL}{{\mathbb L}}
+\newcommand{\GG}{{\mathbb G}}
+\newcommand{\GGn}{{\mathbb G}_n}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\UU}{\mathbb{U}}
+\newcommand{\FF}{{\mathbb F}}
+\newcommand{\YY}{{\mathbb Y}}
+\newcommand{\WW}{{\mathbb W}}
+\newcommand{\HH}{{\mathbb H}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{{\mathbb Z}}
+
+
+
+\newcommand{\ib}{\boldsymbol{i}}
+\newcommand{\jb}{\boldsymbol{j}}
+\newcommand{\Gb}{\boldsymbol{\Gamma}}
+
+
+
+\newcommand{\eps}{\varepsilon}
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\pp}{\ensuremath{\mathfrak{P}}}
+% \newcommand{\ff}{\ensuremath{\mathfrak{F}}}
+\newcommand{\fft}{\ensuremath{\tilde{\mathfrak{F}}}}
+\newcommand{\ffn}{\ensuremath{{\mathfrak{F}}^{\otimes n}}}
+\newcommand{\ffb}{\ensuremath{\ff_{\text{BDD}}}}
+\newcommand{\ffs}{\ensuremath{\ff_{\text{SMU}}}}
+
+
+\newcommand{\one}{\mathbbm{1}}
+\newcommand{\bb}[1]{\mathbb {#1}}
+\newcommand{\kl}[2]{\rho_{\mathrm{KL}}\left({#1} \, \Vert \, {#2} \right)}
+\newcommand{\mc}[1]{\mathcal {#1}}
+\newcommand{\bs}[1]{\boldsymbol {#1}}
+
+\newcommand{\cI}{\mathcal{I}}
+\newcommand{\cK}{\mathcal{K}}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\bH}{\boldsymbol{H}}
+\newcommand{\bX}{\boldsymbol{X}}
+\newcommand{\bx}{\boldsymbol{x}}
+\newcommand{\bz}{\boldsymbol{z}}
+
+\newcommand{\wh}{\widehat}
+
+% \newcommand{\argmin}{\mathrm{argmin}}
+%%\newcommand{\inf}{\mathrm{inf}}
+%%\newcommand{\sup}{\mathrm{sup}}
+\newcommand{\limsupp}{{\overline{\mathrm{lim}}}}
+\newcommand{\ess}{{{\mathrm{ess}}}}
+%% \newcommand{\width}{{\mathrm{width}}}
+\newcommand{\SPAN}{{\mathrm{span}}}
+
+\newcommand{\adj}{\operatorname{adj}}
+\newcommand{\linaff}{\operatorname{Lin}}
+%% \newcommand{\lin}{{\mathrm{lin}}}
+\newcommand{\Lin}{\operatorname{Lin}}
+
+
+%% polar coords; just regular font for now?
+\NewDocumentCommand\PC{O{}}{
+        \ifstrempty{#1}{
+        P^{d-1}
+        }{
+        P^{#1}
+        }
+}
+%% polar coords; just regular font for now?
+\NewDocumentCommand\PCc{O{}}{
+        \ifstrempty{#1}{
+        \overline{P}^{d-1}
+        }{
+        \overline{P}^{#1}
+        }
+}
+
+\NewDocumentCommand\ffnH{O{}}{
+  \ifstrempty{#1}{
+  \widehat{f}_{n,\bH}
+  }{
+  \widehat{f}_{#1}
+  }
+}
+
+\NewDocumentCommand\fftaun{O{}}{
+  \ifstrempty{#1}{
+  \widehat{f}_{\tau, n}
+  }{
+  \widehat{f}_{\tau, #1}
+  }
+}
+\NewDocumentCommand\fftau{O{}}{
+  \ifstrempty{#1}{
+       f_{\tau,0}
+  }{
+        f_{\tau,#1}
+  }
+}
+
+\NewDocumentCommand\LLtau{O{}}{
+  \ifstrempty{#1}{
+  L
+  }{
+   L_{#1}
+  }
+}
+\NewDocumentCommand\deriv{m O{}}{
+  \ifstrempty{#2}{
+  \frac{d}{d #1}
+  }{
+  \frac{d #2}{d #1}
+  }
+}
+
+\NewDocumentCommand\pderiv{m O{}}{
+  \ifstrempty{#2}{
+  \frac{\partial}{\partial #1}
+  }{
+  \frac{\partial #2}{\partial #1}
+  }
+}
+\NewDocumentCommand\derivtwo{m m O{}}{
+  \ifstrempty{#3}{
+  \frac{\partial^2}{\partial #1 \partial #2}
+  }{
+  \frac{\partial^2 #3}{\partial #1 \partial #2}
+  }
+}
+
+
+
+\DeclareMathOperator{\LS}{LS}
+\DeclareMathOperator{\HDR}{HDR}
+
+\newcommand{\bracketing}{N_{[\,]}} %% deprecated
+\newcommand{\iid}{\stackrel{\text{iid}}{\sim}}
+\newcommand{\ind}{\stackrel{\text{ind}}{\sim}}
+
+
+
+
+
+\newenvironment{solution}{%
+  \par \vspace{.2cm} { \bf Solution:}%
+}{%
+  \vspace{.2cm}
+}
+
+% \newenvironment{longform}{%
+%   \par \vspace{.2cm} { \bf (Begin) Notes to self:}%
+% }{%
+%         \bf (End) Notes to self:  \vspace{.2cm}
+% }
+\newenvironment{longform}{%
+        \color{gray}
+}{\ignorespacesafterend}
+
+
+%%% Local Variables:
+%%% mode: plain-tex
+%%% TeX-master: "p"
+%%% End:
