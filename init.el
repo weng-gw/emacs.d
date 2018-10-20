@@ -63,13 +63,9 @@
   :config (miniedit-install))
 (time-stamp)
 (add-hook 'write-file-hooks 'time-stamp)
-
 (require 'template)
 (template-initialize)
 
-;; (use-package material-theme
-;;   :config
-;;   (load-theme 'material t))
 (use-package hc-zenburn-theme
   :config (load-theme 'hc-zenburn t))
 
@@ -81,11 +77,32 @@
   :config (ac-config-default))
 
 ;; auctex setting for MacOS with Skim
-;; (use-package auctex
-;;   :defer t
-;;   ;:hook  (latex-mode . flyspell-mode)
+(use-package auctex
+  :hook  (LaTeX-mode . flyspell-mode)
+  :init
+  (setq TeX-PDF-mode t)
+  ;;(setq Tex-output-view-style (quote (("^pdf$" "." "open %o %(outpage%)"))))
+  (setq TeX-view-program-selection '((output-pdf "Skim")))
+  (setq TeX-view-program-list
+	'(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+  (add-hook 'LaTeX-mode-hook
+	    (lambda()
+	      (latex-math-mode 1)
+	      (add-to-list
+	       'TeX-command-list '("XeLaTeX" "%`xelatex -synctex=1%(mode)%' %t" TeX-run-TeX nil t))
+	      (setq TeX-command-default "XeLaTeX")
+	      (setq TeX-show-compilation nil)))
+  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (setq TeX-source-correlate-method 'synctex)
+  (setq TeX-source-correlate-mode t)
+  (setq TeX-source-correlate-start-server t)
+  )
+
+;; auctex setting for Linux with evince>
+;; (use-package auctex  
+;;   ;:hook  (LaTeX-mode . flyspell-mode)
 ;;   :init
-;;   (add-hook 'latex-mode #'flyspell-mode)
 ;;   (setq TeX-PDF-mode t)
 ;;   ;;(setq Tex-output-view-style (quote (("^pdf$" "." "open %o %(outpage%)"))))
 ;;   (setq TeX-view-program-selection '((output-pdf "Skim")))
@@ -105,26 +122,7 @@
 ;;   (setq TeX-source-correlate-start-server t)
 ;;   )
 
-;; auctex setting for Linux with evince
-(use-package auctex
-  :hook  (LaTeX-mode . flyspell-mode)
-  :init
-  (setq TeX-PDF-mode t)
-  ;;(setq Tex-output-view-style (quote (("^pdf$" "." "open %o %(outpage%)"))))
-  (setq TeX-output-view-style (quote (("^pdf$" "." "evince %o %(outpage)"))))
-  (add-hook 'LaTeX-mode-hook
-	    (lambda()
-	      (latex-math-mode 1)
-	      (add-to-list
-	       'TeX-command-list' ("XeLaTeX" "%`xelatex -synctex=1%(mode)%' %t" TeX-run-TeX nil t))
-	      (setq TeX-command-default "XeLaTeX")
-	      (setq TeX-show-compilation nil)))
-  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-  (setq TeX-source-correlate-method 'synctex)
-  (setq TeX-source-correlate-mode t)
-  (setq TeX-source-correlate-start-server t)
-  )
+
 
 
 
