@@ -46,7 +46,7 @@
 
 (setq visible-bell nil)
 (setq column-number-mode t)
-(setq auto-fill-mode t)
+(setq-default auto-fill-function 'do-auto-fill)
 (setq-default fill-column 80)
 (global-linum-mode t)
 (setq inhibit-startup-message t)
@@ -104,7 +104,6 @@
   :hook  (LaTeX-mode . flyspell-mode)
   :init
   (setq TeX-PDF-mode t)
-  ;;(setq Tex-output-view-style (quote (("^pdf$" "." "open %o %(outpage%)"))))
   (setq TeX-output-view-style (quote (("^pdf$" "." "evince %o %(outpage)"))))
   (add-hook 'LaTeX-mode-hook
 	    (lambda()
@@ -118,10 +117,6 @@
   (setq TeX-source-correlate-method 'synctex)
   (setq TeX-source-correlate-mode t)
   (setq TeX-source-correlate-start-server t))
-
-
-
-
 
 
 
@@ -140,6 +135,7 @@
 	 (setq elpy-rpc-backend "jedi"))
 
 
+
 (use-package ein
   :defer t
   :config (require 'ein)
@@ -147,6 +143,5 @@
   (require 'ein-notebook)
   (require 'ein-subpackages)
   )
-
-	   
+(use-package markdown-mode)  ;required by EIN
 
