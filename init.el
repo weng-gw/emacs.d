@@ -46,7 +46,7 @@
 
 (setq visible-bell nil)
 (setq column-number-mode t)
-(setq auto-fill-mode t)
+(setq-default auto-fill-function 'do-auto-fill)
 (setq-default fill-column 80)
 (global-linum-mode t)
 (setq inhibit-startup-message t)
@@ -81,15 +81,12 @@
   :hook  (LaTeX-mode . flyspell-mode)
   :init
   (setq TeX-PDF-mode t)
-  ;;(setq Tex-output-view-style (quote (("^pdf$" "." "open %o %(outpage%)"))))
-  (setq TeX-view-program-selection '((output-pdf "Skim")))
-  (setq TeX-view-program-list
-	'(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+  (setq TeX-output-view-style (quote (("^pdf$" "." "evince %o %(outpage)"))))
   (add-hook 'LaTeX-mode-hook
 	    (lambda()
 	      (latex-math-mode 1)
 	      (add-to-list
-	       'TeX-command-list '("XeLaTeX" "%`xelatex -synctex=1%(mode)%' %t" TeX-run-TeX nil t))
+	       'TeX-command-list' ("XeLaTeX" "%`xelatex -synctex=1%(mode)%' %t" TeX-run-TeX nil t))
 	      (setq TeX-command-default "XeLaTeX")
 	      (setq TeX-show-compilation nil)))
   (add-hook 'LaTeX-mode-hook 'visual-line-mode)
@@ -124,22 +121,20 @@
 
 
 
-
-
-
 (use-package magit
   :defer t
   :bind ("C-c g" . magit-status))
 
 
 (use-package elpy
-  :after python 
+  :after python  
   :config (elpy-enable)
   (setq python-shell-interpreter "jupyter"
 	python-shell-interpreter-args "console  --simple-prompt"
 	       python-shell-prompt-detect-failure-warning nil)
 	 (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
 	 (setq elpy-rpc-backend "jedi"))
+
 
 
 (use-package ein
@@ -149,5 +144,4 @@
   (require 'ein-notebook)
   (require 'ein-subpackages)
   )
-
-(use-package markdown-mode)
+(use-package markdown-mode)  ;required by EIN
