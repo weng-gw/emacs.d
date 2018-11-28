@@ -133,7 +133,7 @@
 
 
 (use-package elpy
-  :defer t
+  :after python 
   :config (elpy-enable)
   (setq python-shell-interpreter "jupyter"
 	python-shell-interpreter-args "console  --simple-prompt"
@@ -150,5 +150,4 @@
   (require 'ein-subpackages)
   )
 
-	   
-
+(use-package markdown-mode)
