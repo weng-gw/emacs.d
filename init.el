@@ -46,7 +46,6 @@
 
 (setq visible-bell nil)
 (setq column-number-mode t)
-(setq-default auto-fill-function 'do-auto-fill)
 (setq-default fill-column 80)
 (global-linum-mode t)
 (setq inhibit-startup-message t)
@@ -100,9 +99,11 @@
 ;;   )
 
 ;; auctex setting for Linux with evince
-(use-package auctex  
-  :hook  (LaTeX-mode . flyspell-mode)
+
+(use-package auctex
+  :hook (LaTeX-mode . flyspell-mode)
   :init
+  (add-hook 'LaTeX-mode-hook 'auto-fill-mode)
   (setq TeX-PDF-mode t)
   (setq TeX-output-view-style (quote (("^pdf$" "." "evince %o %(outpage)"))))
   (add-hook 'LaTeX-mode-hook
@@ -139,9 +140,19 @@
 (use-package ein
   :defer t
   :config (require 'ein)
+  (setq ein:completion-backend 'ein:use-ac-jedi-backend)
   (require 'ein-loaddefs)
   (require 'ein-notebook)
   (require 'ein-subpackages)
   )
 (use-package markdown-mode)  ;required by EIN
+
+(use-package org
+  :defer t
+  :init
+  (add-hook 'org-mode-hook 'flyspell-mode)
+  (add-hook 'org-mode-hook 'auto-fill-mode)
+  )
+
+
 
