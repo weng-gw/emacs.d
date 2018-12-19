@@ -44,7 +44,7 @@
 (scroll-bar-mode -1)
 (display-time-mode 1)
 
-(setq visible-bell nil)
+(setq visible-bell 1)
 (setq column-number-mode t)
 (setq-default fill-column 80)
 (global-linum-mode t)
@@ -150,3 +150,5 @@
   (add-hook 'org-mode-hook 'flyspell-mode)
   (add-hook 'org-mode-hook 'auto-fill-mode)
   )
+
+(use-package htmlize)
