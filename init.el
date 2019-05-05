@@ -47,7 +47,7 @@
 (setq visible-bell 1)
 (setq column-number-mode t)
 (setq-default fill-column 80)
-(global-linum-mode t)
+;;(global-linum-mode t)
 (setq inhibit-startup-message t)
 (set-frame-font "Monospace-13" t t)
 (show-paren-mode 1)
