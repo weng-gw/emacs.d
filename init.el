@@ -44,8 +44,7 @@
 (scroll-bar-mode -1)
 (display-time-mode 1)
 
-;;(keyboard-translate ?\C-h ?\C-?)
-;;(global-set-key "\C-?" 'delete-backward-char)
+
 (setq visible-bell 1)
 (setq column-number-mode t)
 (setq-default fill-column 80)
@@ -149,5 +148,4 @@
   )
 
 (use-package htmlize)
-
 
