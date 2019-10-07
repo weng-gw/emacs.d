@@ -44,6 +44,8 @@
 (scroll-bar-mode -1)
 (display-time-mode 1)
 
+;;(keyboard-translate ?\C-h ?\C-?)
+;;(global-set-key "\C-?" 'delete-backward-char)
 (setq visible-bell 1)
 (setq column-number-mode t)
 (setq-default fill-column 80)
@@ -51,6 +53,8 @@
 (global-set-key (kbd "C-c l") 'goto-line)
 (setq inhibit-startup-message t)
 (set-frame-font "Monospace-13" t t)
+(add-to-list 'default-frame-alist '(font . "Monospace-13" ))
+(set-face-attribute 'default t :font "Monospace-13" )
 (show-paren-mode 1)
 (use-package smart-mode-line)
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -72,6 +76,15 @@
 (use-package ess
   :defer t
   )
+
+(use-package polymode
+  :defer t
+  )
+
+(use-package poly-R
+  :defer t
+  )
+
 
 (use-package auto-complete
   :config (ac-config-default))
@@ -136,4 +149,5 @@
   )
 
 (use-package htmlize)
+
 
