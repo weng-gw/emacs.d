@@ -59,6 +59,13 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (use-package window-numbering
   :init (window-numbering-mode 1))
+(progn
+  (require 'windmove)
+  ;; use Shift+arrow_keys to move cursor around split panes
+  (windmove-default-keybindings)
+  ;; when cursor is on edge, move to the other side, as in a torus space
+  (setq windmove-wrap-around t )
+)
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
 (setq-default ispell-program-name "aspell")
@@ -72,8 +79,14 @@
 (use-package hc-zenburn-theme
   :config (load-theme 'hc-zenburn t))
 
+(use-package neotree
+  :config (global-set-key (kbd "C-c t") 'neotree-toggle)
+  )
+
+
 (use-package ess
   :defer t
+  :bind ("C-c C-s" . ess-switch-process)
   )
 
 (use-package polymode
@@ -149,3 +162,4 @@
 
 (use-package htmlize)
 
+(add-hook 'markdown-mode-hook 'auto-fill-mode)
