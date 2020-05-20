@@ -83,6 +83,11 @@
   :config (global-set-key (kbd "C-c t") 'neotree-toggle)
   )
 
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+(setq uniquify-separator "/")
+(setq uniquify-after-kill-buffer-p t)
+
 
 (use-package ess
   :defer t
@@ -163,3 +168,17 @@
 (use-package htmlize)
 
 (add-hook 'markdown-mode-hook 'auto-fill-mode)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (uniquify window-numbering use-package smart-mode-line poly-R neotree miniedit material-theme magit htmlize hc-zenburn-theme exec-path-from-shell ess elpy ein auto-compile auctex))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Courier" :foundry "nil" :slant normal :weight normal :height 130 :width normal)))))
