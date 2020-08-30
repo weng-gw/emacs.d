@@ -172,5 +172,10 @@
   )
 
 (use-package htmlize)
-
 (add-hook 'markdown-mode-hook 'auto-fill-mode)
+
+
+
+(use-package scala-mode
+  :interpreter
+  ("scala" . scala-mode))
