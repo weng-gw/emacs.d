@@ -186,5 +186,7 @@
   :config (yas-reload-all)
   (add-hook 'python-mode 'yas-minor-mode)
   (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
-  (add-hook 'org-mode-hook 'yas-minor-mode))
-
+  (add-hook 'org-mode-hook 'yas-minor-mode)
+  (add-hook 'scala-mode 'yas-minor-mode))
+;; note the snippets bundle needs to be installed separately
+;; use M-x package-list-packages to list all packages available and install yasnippet-snippets
