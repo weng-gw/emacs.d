@@ -187,4 +187,3 @@
   (add-hook 'python-mode 'yas-minor-mode)
   (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
   (add-hook 'org-mode-hook 'yas-minor-mode))
-
