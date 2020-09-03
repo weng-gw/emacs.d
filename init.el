@@ -182,7 +182,6 @@
 
 
 (use-package yasnippet
-  :defer t
   :config (yas-reload-all)
   (add-hook 'python-mode 'yas-minor-mode)
   (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
