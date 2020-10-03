@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+#Author : Guangwei Weng <weng.gw@outlook.com>
+# name: write parquet
+# key: wparquet
+# --
+${1:name}.write.mode("overwrite").parquet(s"")

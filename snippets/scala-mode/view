@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+#Author : Guangwei Weng <weng.gw@outlook.com>
+# name: name.createOrReplaceTempView()
+# key: cview
+# --
+
+${1:name}.createOrReplaceTempView("${2:view}")
