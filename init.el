@@ -191,7 +191,3 @@
 ;; note the snippets bundle needs to be installed separately
 ;; use M-x package-list-packages to list all packages available and install yasnippet-snippets
 
-(use-package fold-this
-  :defer t
-  :bind ("C-c C-f" . fold-this)
-  ("C-c M-u" . fold-this-unfold-all))
