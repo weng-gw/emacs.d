@@ -185,7 +185,7 @@
   :config (yas-reload-all)
   (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
   (add-hook 'python-mode 'yas-minor-mode)
-  (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
+  ;;(add-hook 'LaTeX-mode-hook 'yas-minor-mode)
   (add-hook 'org-mode-hook 'yas-minor-mode)
   (add-hook 'scala-mode-hook 'yas-minor-mode))
 ;; note the snippets bundle needs to be installed separately
