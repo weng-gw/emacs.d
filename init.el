@@ -169,7 +169,11 @@
   :init
   (add-hook 'org-mode-hook 'flyspell-mode)
   (add-hook 'org-mode-hook 'auto-fill-mode)
-  )
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((R . t)
+     (python . t)))  )
+
 
 (use-package htmlize)
 (add-hook 'markdown-mode-hook 'auto-fill-mode)
