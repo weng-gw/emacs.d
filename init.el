@@ -146,13 +146,27 @@
 (use-package elpy
   :after python  
   :config (elpy-enable)
+  (pyvenv-activate (expand-file-name "~/opt/anaconda3/envs/py38"))
+  ;; and note that you need to install jupyter console for this enviromnet with 
+  ;; conda install -c anaconda jupyter_console 
   (setq python-shell-interpreter "jupyter"
-	python-shell-interpreter-args "console  --simple-prompt"
+	python-shell-interpreter-args "console --simple-prompt"
 	       python-shell-prompt-detect-failure-warning nil)
 	 (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
-	 (setq elpy-rpc-backend "jedi"))
+	 (setq elpy-rpc-backend "jedi")
+	 (setq elpy-shell-echo-output nil);; this command is used for fixing ^G problem in MacOS
+	 )
 
+;; (use-package conda
+;;   :defer t
+;;   :config (require 'conda)
+;;   (setq 
+;;    conda-env-home-directory (expand-file-name "~/opt/anaconda3/")
+;;    ))
+;; (custom-set-variables
+;;    '(conda-anaconda-home (expand-file-name "~/opt/anaconda3/")))
 
+;; (use-package anaconda-mode)
 
 (use-package ein
   :defer t
@@ -172,7 +186,36 @@
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((R . t)
-     (python . t)))  )
+     (python . t)))
+  (setq org-publish-project-alist
+      '(
+
+  ("org-ianbarton"
+          ;; Path to your org files.
+          :base-directory "~/Documents/PersonalPage/"
+          :base-extension "org"
+
+          ;; Path to your Jekyll project.
+          :publishing-directory "~/Documents/PersonalPage/"
+          :recursive t
+          :publishing-function org-html-publish-to-html
+          :headline-levels 4
+          :html-extension "html"
+          :body-only t ;; Only export section between <body> </body>
+    )
+
+
+    ("org-static-ian"
+          :base-directory "~/Documents/PersonalPage/"
+          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|php"
+          :publishing-directory "~/Documents/PersonalPage/"
+          :recursive t
+          :publishing-function org-publish-attachment)
+
+    ("ian" :components ("org-ianbarton" "org-static-ian"))
+
+))
+  )
 
 
 (use-package htmlize)
@@ -194,4 +237,3 @@
   (add-hook 'scala-mode-hook 'yas-minor-mode))
 ;; note the snippets bundle needs to be installed separately
 ;; use M-x package-list-packages to list all packages available and install yasnippet-snippets
-
