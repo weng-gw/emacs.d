@@ -142,13 +142,18 @@
   :defer t
   :bind ("C-c g" . magit-status))
 
-
 (use-package elpy
-  :after python  
-  :config (elpy-enable)
+  :ensure t
+  :defer t
+  :init
+  (advice-add 'python-mode :before 'elpy-enable)
+  (add-hook 'python-mode-hook (lambda () (auto-complete-mode -1)))
+  ;;diable auto-complete-mode since it slows down editing and company is the default dependence
   (pyvenv-activate (expand-file-name "~/opt/anaconda3/envs/py38"))
   ;; and note that you need to install jupyter console for this enviromnet with 
-  ;; conda install -c anaconda jupyter_console 
+  ;; conda install -c anaconda jupyter_console
+  (auto-complete-mode -1)
+  (remove-hook 'elpy-modules 'elpy-module-flymake)
   (setq python-shell-interpreter "jupyter"
 	python-shell-interpreter-args "console --simple-prompt"
 	       python-shell-prompt-detect-failure-warning nil)
@@ -156,6 +161,21 @@
 	 (setq elpy-rpc-backend "jedi")
 	 (setq elpy-shell-echo-output nil);; this command is used for fixing ^G problem in MacOS
 	 )
+
+;; (use-package elpy
+;;   :after python  
+;;   :config (elpy-enable)
+;;   (pyvenv-activate (expand-file-name "~/opt/anaconda3/envs/py38"))
+;;   ;; and note that you need to install jupyter console for this enviromnet with 
+;;   ;; conda install -c anaconda jupyter_console
+;;   (remove-hook 'elpy-modules 'elpy-module-flymake)
+;;   (setq python-shell-interpreter "jupyter"
+;; 	python-shell-interpreter-args "console --simple-prompt"
+;; 	       python-shell-prompt-detect-failure-warning nil)
+;; 	 (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
+;; 	 (setq elpy-rpc-backend "jedi")
+;; 	 (setq elpy-shell-echo-output nil);; this command is used for fixing ^G problem in MacOS
+;; 	 )
 
 ;; (use-package conda
 ;;   :defer t
@@ -234,6 +254,7 @@
   (add-hook 'python-mode 'yas-minor-mode)
   ;;(add-hook 'LaTeX-mode-hook 'yas-minor-mode)
   (add-hook 'org-mode-hook 'yas-minor-mode)
+  (add-hook 'markdown-mode-hook 'yas-minor-mode)
   (add-hook 'scala-mode-hook 'yas-minor-mode))
 ;; note the snippets bundle needs to be installed separately
 ;; use M-x package-list-packages to list all packages available and install yasnippet-snippets

@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+#Author : Guangwei Weng <weng.gw@outlook.com>
+# name: Rmd template
+# key: rmdtemp
+# --
+
+---
+title: 
+author: 
+date: 
+output: html_document
+---
+
+
