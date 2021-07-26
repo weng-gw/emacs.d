@@ -186,6 +186,8 @@
 ;;   :ensure t
 ;;   :config (treemacs-set-scope-type 'Perspectives))
 
+(use-package all-the-icons) ;; this is used by centaur-tabs
+;; After adding this, need to run M-x all-the-icons-install-fonts to install the icons
 (use-package centaur-tabs
   :demand
   :config
@@ -361,19 +363,3 @@
 ;; note the snippets bundle needs to be installed separately
 ;; use M-x package-list-packages to list all packages available and install yasnippet-snippets
 
-;; (use-package tabbar
-;;   :init (tabbar-mode))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (all-the-icons yasnippet-snippets window-numbering use-package treemacs-magit treemacs-icons-dired tabbar smart-mode-line scala-mode poly-R neotree miniedit htmlize hc-zenburn-theme fold-this ess elpy ein conda centaur-tabs auto-complete auto-compile auctex anaconda-mode))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:foreground "#DCDCCC" :background "#313131")))))
