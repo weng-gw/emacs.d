@@ -4,8 +4,9 @@
 (setq user-full-name "Guangwei Weng"
       user-mail-address "wengx076@umn.edu")
 
-(unless (assoc-default "melpa" package-archives)
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
+;; (unless (assoc-default "melpa" package-archives)
+;;   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (unless (assoc-default "org" package-archives)
   (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
 
@@ -116,6 +117,9 @@
 (use-package ess
   :defer t
   :bind ("C-c C-s" . ess-switch-process)
+  :config (setq ess-fancy-comments nil)
+  (setq ess-use-company t)
+  (add-hook 'ess-mode-hook 'company-mode)
   )
 
 (use-package polymode
@@ -127,8 +131,11 @@
   )
 
 
-(use-package auto-complete
-  :config (ac-config-default))
+;; now deprecate auto-complete and try company-mode instead
+;;(use-package auto-complete)
+;;  :config (ac-config-default))
+
+;;(use-package company)
 
 ;; auctex setting for MacOS with Skim
 (use-package auctex
@@ -181,9 +188,13 @@
 ;; 	 )
 
 (use-package elpy
+  :ensure t
   :after python  
   :config (elpy-enable)
-  (add-hook 'python-mode-hook (lambda () (auto-complete-mode -1)))
+  (setq elpy-rpc-backend "jedi")  
+  ;; (setq company-idle-delay 0.5)
+  (setq elpy-company-add-completion-from-shell nil)
+  ;;(add-hook 'python-mode-hook (lambda () (auto-complete-mode -1)))
   ;;diable auto-complete-mode since it slows down editing and company is the default dependence
   (pyvenv-activate (expand-file-name "~/opt/anaconda3/envs/py38"))
   ;; and note that you need to install jupyter console for this enviromnet with 
@@ -193,9 +204,9 @@
 	python-shell-interpreter-args "console --simple-prompt"
 	       python-shell-prompt-detect-failure-warning nil)
 	 (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
-	 (setq elpy-rpc-backend "jedi")
 	 (setq elpy-shell-echo-output nil);; this command is used for fixing ^G problem in MacOS
 	 )
+
 
 (use-package ein
   :defer t
@@ -216,6 +227,7 @@
    'org-babel-load-languages
    '((R . t)
      (python . t)))
+  (setq org-src-window-setup 'other-frame)
   (setq org-publish-project-alist
       '(
 
@@ -267,3 +279,16 @@
 ;; note the snippets bundle needs to be installed separately
 ;; use M-x package-list-packages to list all packages available and install yasnippet-snippets or yasnippet-classic-snippets
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(yasnippet-snippets window-numbering use-package smart-mode-line scala-mode poly-R neotree miniedit magit htmlize hc-zenburn-theme exec-path-from-shell ess ein centaur-tabs auto-compile auctex all-the-icons)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
