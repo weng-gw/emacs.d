@@ -167,33 +167,36 @@
   :defer t
   :bind ("C-c g" . magit-status))
 
-;; (use-package elpy
+;; (use-package python-mode
 ;;   :ensure t
-;;   :defer t
 ;;   :init
-;;   (advice-add 'python-mode :before 'elpy-enable)
-;;   (add-hook 'python-mode-hook (lambda () (auto-complete-mode -1)))
-;;   ;;diable auto-complete-mode since it slows down editing and company is the default dependence
 ;;   (pyvenv-activate (expand-file-name "~/opt/anaconda3/envs/py38"))
-;;   ;; and note that you need to install jupyter console for this enviromnet with 
-;;   ;; conda install -c anaconda jupyter_console
-;;   (auto-complete-mode -1)
-;;   (remove-hook 'elpy-modules 'elpy-module-flymake)
-;;   (setq python-shell-interpreter "jupyter"
-;; 	python-shell-interpreter-args "console --simple-prompt"
-;; 	       python-shell-prompt-detect-failure-warning nil)
-;; 	 (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
-;; 	 (setq elpy-rpc-backend "jedi")
-;; 	 (setq elpy-shell-echo-output nil);; this command is used for fixing ^G problem in MacOS
-;; 	 )
+;;   (setq py-shell-name "ipython")
+  ;; (setq python-shell-interpreter "ipython"
+  ;; 	python-shell-interpreter-args "-i"
+  ;; 	python-shell-prompt-detect-failure-warning nil)
+;;  )					
+
+;; (setq python-shell-interpreter "ipython"
+;;       python-shell-interpreter-args "-i"
+;;       python-shell-prompt-detect-failure-warning nil)
+  
+;; (use-package jupyter
+;;   :ensure t
+;;   :commands (jupyter-run-server-repl
+;;              jupyter-run-repl
+;;              jupyter-server-list-kernels)
+;;   :init (eval-after-load 'jupyter-org-extensions ; conflicts with my helm config, I use <f2 #>
+;;           '(unbind-key "C-c h" jupyter-org-interaction-mode-map)))  
+
 
 (use-package elpy
   :ensure t
   :after python  
   :config (elpy-enable)
-  (setq elpy-rpc-backend "jedi")  
+  ;; (setq elpy-rpc-backend "jedi")  
   ;; (setq company-idle-delay 0.5)
-  (setq elpy-company-add-completion-from-shell nil)
+  ;; (setq elpy-company-add-completion-from-shell nil)
   ;;(add-hook 'python-mode-hook (lambda () (auto-complete-mode -1)))
   ;;diable auto-complete-mode since it slows down editing and company is the default dependence
   (pyvenv-activate (expand-file-name "~/opt/anaconda3/envs/py38"))
@@ -211,7 +214,7 @@
 (use-package ein
   :defer t
   :config (require 'ein)
-  (setq ein:completion-backend 'ein:use-ac-jedi-backend)
+  (setq ein:completion-backend 'ein:use-company-jedi-backend)
   (require 'ein-loaddefs)
   (require 'ein-notebook)
   (require 'ein-subpackages)
@@ -284,6 +287,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ein:markdown-header-scaling t)
+ '(ein:output-area-inlined-images t)
+ '(elpy-modules
+   '(elpy-module-company elpy-module-eldoc elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-sane-defaults))
  '(package-selected-packages
    '(yasnippet-snippets window-numbering use-package smart-mode-line scala-mode poly-R neotree miniedit magit htmlize hc-zenburn-theme exec-path-from-shell ess ein centaur-tabs auto-compile auctex all-the-icons)))
 (custom-set-faces
