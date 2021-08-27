@@ -209,6 +209,7 @@
 	 (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
 	 (setq elpy-shell-echo-output nil);; this command is used for fixing ^G problem in MacOS
 	 )
+;;Note after install elpy, do not remove the custom-set-varaibles added by Emacs in the end
 
 
 (use-package ein
@@ -219,6 +220,10 @@
   (require 'ein-notebook)
   (require 'ein-subpackages)
   )
+;; to set for styling markdonw headings
+;; M-x customize-group RET ein:markdown-faces RET toggle ein:markdown-header-scaling  to non-nil
+;; To show inline images, select  then toggle ein:output-are-inlined-imoages to non-nil
+
 (use-package markdown-mode)  ;required by EIN
 
 (use-package org
