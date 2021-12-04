@@ -45,6 +45,15 @@
 (scroll-bar-mode -1)
 (display-time-mode 1)
 
+;; (use-package smooth-scrolling
+;;   :ensure t
+;;   :init (require 'smooth-scrolling)
+;;   (smooth-scrolling-mode 1))
+
+;; (use-package good-scroll
+;;   :ensure t
+;;   :init (good-scroll-mode 1))
+
 
 (setq visible-bell 1)
 (setq column-number-mode t)
@@ -118,8 +127,8 @@
   :defer t
   :bind ("C-c C-s" . ess-switch-process)
   :config (setq ess-fancy-comments nil)
-  (setq ess-use-company t)
-  (add-hook 'ess-mode-hook 'company-mode)
+  ;;(setq ess-use-company t)
+  ;;(add-hook 'ess-mode-hook 'company-mode)
   )
 
 (use-package polymode
@@ -194,9 +203,9 @@
   :ensure t
   :after python  
   :config (elpy-enable)
-  ;; (setq elpy-rpc-backend "jedi")  
-  ;; (setq company-idle-delay 0.5)
-  ;; (setq elpy-company-add-completion-from-shell nil)
+  (setq elpy-rpc-backend "jedi")  
+  (setq company-idle-delay 0.5)
+  (setq elpy-company-add-completion-from-shell nil)
   ;;(add-hook 'python-mode-hook (lambda () (auto-complete-mode -1)))
   ;;diable auto-complete-mode since it slows down editing and company is the default dependence
   (pyvenv-activate (expand-file-name "~/opt/anaconda3/envs/py38"))
@@ -297,7 +306,8 @@
  '(elpy-modules
    '(elpy-module-company elpy-module-eldoc elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-sane-defaults))
  '(package-selected-packages
-   '(yasnippet-snippets window-numbering use-package smart-mode-line scala-mode poly-R neotree miniedit magit htmlize hc-zenburn-theme exec-path-from-shell ess ein centaur-tabs auto-compile auctex all-the-icons)))
+   '(good-scroll good-scroll-mode smooth-scrolling smooth-scroll yasnippet-snippets window-numbering use-package smart-mode-line scala-mode poly-R neotree miniedit magit htmlize hc-zenburn-theme exec-path-from-shell ess ein centaur-tabs auto-compile auctex all-the-icons))
+ '(pixel-scroll-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
