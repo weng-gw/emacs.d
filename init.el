@@ -199,36 +199,36 @@
 ;;           '(unbind-key "C-c h" jupyter-org-interaction-mode-map)))  
 
 
-(use-package elpy
-  :ensure t
-  :after python  
-  :config (elpy-enable)
-  (setq elpy-rpc-backend "jedi")  
-  (setq company-idle-delay 0.5)
-  (setq elpy-company-add-completion-from-shell nil)
-  ;;(add-hook 'python-mode-hook (lambda () (auto-complete-mode -1)))
-  ;;diable auto-complete-mode since it slows down editing and company is the default dependence
-  (pyvenv-activate (expand-file-name "~/opt/anaconda3/envs/py38"))
-  ;; and note that you need to install jupyter console for this enviromnet with 
-  ;; conda install -c anaconda jupyter_console
-  (remove-hook 'elpy-modules 'elpy-module-flymake)
-  (setq python-shell-interpreter "jupyter"
-	python-shell-interpreter-args "console --simple-prompt"
-	       python-shell-prompt-detect-failure-warning nil)
-	 (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
-	 (setq elpy-shell-echo-output nil);; this command is used for fixing ^G problem in MacOS
-	 )
-;;Note after install elpy, do not remove the custom-set-varaibles added by Emacs in the end
+;; (use-package elpy
+;;   :ensure t
+;;   :after python  
+;;   :config (elpy-enable)
+;;   (setq elpy-rpc-backend "jedi")  
+;;   (setq company-idle-delay 0.5)
+;;   (setq elpy-company-add-completion-from-shell nil)
+;;   ;;(add-hook 'python-mode-hook (lambda () (auto-complete-mode -1)))
+;;   ;;diable auto-complete-mode since it slows down editing and company is the default dependence
+;;   (pyvenv-activate (expand-file-name "~/opt/anaconda3/envs/py38"))
+;;   ;; and note that you need to install jupyter console for this enviromnet with 
+;;   ;; conda install -c anaconda jupyter_console
+;;   (remove-hook 'elpy-modules 'elpy-module-flymake)
+;;   (setq python-shell-interpreter "jupyter"
+;; 	python-shell-interpreter-args "console --simple-prompt"
+;; 	       python-shell-prompt-detect-failure-warning nil)
+;; 	 (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
+;; 	 (setq elpy-shell-echo-output nil);; this command is used for fixing ^G problem in MacOS
+;; 	 )
+;; ;;Note after install elpy, do not remove the custom-set-varaibles added by Emacs in the end
 
 
-(use-package ein
-  :defer t
-  :config (require 'ein)
-  (setq ein:completion-backend 'ein:use-company-jedi-backend)
-  (require 'ein-loaddefs)
-  (require 'ein-notebook)
-  (require 'ein-subpackages)
-  )
+;; (use-package ein
+;;   :defer t
+;;   :config (require 'ein)
+;;   (setq ein:completion-backend 'ein:use-company-jedi-backend)
+;;   (require 'ein-loaddefs)
+;;   (require 'ein-notebook)
+;;   (require 'ein-subpackages)
+;;   )
 ;; to set for styling markdonw headings
 ;; M-x customize-group RET ein:markdown-faces RET toggle ein:markdown-header-scaling  to non-nil
 ;; To show inline images, select  then toggle ein:output-are-inlined-imoages to non-nil
