@@ -1,6 +1,6 @@
+(require 'package)
+;;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
-(setq usepackage-always-ensure t)
-
 (setq user-full-name "Guangwei Weng"
       user-mail-address "wengx076@umn.edu")
 
@@ -11,6 +11,8 @@
 
 
 (add-to-list 'load-path "~/.emacs.d/elisp")
+
+(setq usepackage-always-ensure t)
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
 (setq use-package-verbose t)
@@ -47,7 +49,7 @@
 (setq visible-bell 1)
 (setq column-number-mode t)
 (setq-default fill-column 80)
-(global-linum-mode t)
+;;(global-linum-mode t)
 (setq inhibit-startup-message t)
 (set-frame-font "Monospace-13" t t)
 (show-paren-mode 1)
@@ -123,26 +125,26 @@
   :bind ("C-c g" . magit-status))
 
 
-(use-package elpy
-  :after python  
-  :config (elpy-enable)
-  (setq python-shell-interpreter "jupyter"
-	python-shell-interpreter-args "console  --simple-prompt"
-	       python-shell-prompt-detect-failure-warning nil)
-	 (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
-	 (setq elpy-rpc-backend "jedi"))
+;; (use-package elpy
+;;   :after python  
+;;   :config (elpy-enable)
+;;   (setq python-shell-interpreter "jupyter"
+;; 	python-shell-interpreter-args "console  --simple-prompt"
+;; 	       python-shell-prompt-detect-failure-warning nil)
+;; 	 (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
+;; 	 (setq elpy-rpc-backend "jedi"))
 
 
 
-(use-package ein
-  :defer t
-  :config (require 'ein)
-  (setq ein:completion-backend 'ein:use-ac-jedi-backend)
-  (require 'ein-loaddefs)
-  (require 'ein-notebook)
-  (require 'ein-subpackages)
-  )
-(use-package markdown-mode)  ;required by EIN
+;; (use-package ein
+;;   :defer t
+;;   :config (require 'ein)
+;;   (setq ein:completion-backend 'ein:use-ac-jedi-backend)
+;;   (require 'ein-loaddefs)
+;;   (require 'ein-notebook)
+;;   (require 'ein-subpackages)
+;;   )
+;; (use-package markdown-mode)  ;required by EIN
 
 (use-package org
   :defer t
@@ -152,3 +154,16 @@
   )
 
 (use-package htmlize)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(htmlize markdown-mode ein elpy magit auctex auto-complete ess hc-zenburn-theme miniedit exec-path-from-shell window-numbering smart-mode-line auto-compile use-package)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
