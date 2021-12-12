@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+#Author : Guangwei Weng <weng.gw@outlook.com>
+# name: write csv
+# key: wcsv
+# --
+${1:name}.coalesce(1).write.mode("overwrite").
+  format("com.databricks.spark.csv").option("header", "true").
+  save(s"")

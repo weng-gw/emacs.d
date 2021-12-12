@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+#Author : Guangwei Weng <weng.gw@outlook.com>
+# name: template
+# key: temp
+# --
+
+
+#+STARTUP: latexpreview
+#+STARTUP: inlineimages
+#+TITLE: 

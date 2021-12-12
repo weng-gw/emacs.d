@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+#Author : Guangwei Weng <weng.gw@outlook.com>
+# name: read parquet
+# key: rparquet
+# --
+val ${1:name}=spark.read.parquet(s"")

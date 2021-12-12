@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+#Author : Guangwei Weng <weng.gw@outlook.com>
+# name: val valname = spark.sql()
+# key: valsql
+# --
+val ${1:name} = spark.sql(s"""
+""")

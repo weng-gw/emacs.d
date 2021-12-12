@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+#Author : Guangwei Weng <weng.gw@outlook.com>
+# name: load user L1 archetype
+# key: userArchetype
+# --
+
+val user_archetype = sqlContext.read.
+  parquet(s"/data/prod/archetype_topic_preference_compact/pdate=")
+user_archetype.createOrReplaceTempView("user_archetype")
+
+val user_l1 = spark.sql(s"""
+select e_user_id, l1_category,
+row_number() over (partition by e_user_id order by combscore desc) rn
+from user_archetype
+having rn=1
+""")
+
+user_l1.createOrReplaceTempView("user_l1")
