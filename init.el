@@ -1,6 +1,6 @@
-(require 'package)
-;;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
+(setq usepackage-always-ensure t)
+
 (setq user-full-name "Guangwei Weng"
       user-mail-address "wengx076@umn.edu")
 
@@ -12,8 +12,6 @@
 
 
 (add-to-list 'load-path "~/.emacs.d/elisp")
-
-(setq usepackage-always-ensure t)
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
 (setq use-package-verbose t)
@@ -60,7 +58,6 @@
 (setq visible-bell 1)
 (setq column-number-mode t)
 (setq-default fill-column 80)
-
 ;;(global- linum-mode t)
 (global-set-key (kbd "C-c l") 'goto-line)
 (setq inhibit-startup-message t)
@@ -189,6 +186,18 @@
   ;; 	python-shell-prompt-detect-failure-warning nil)
 ;;  )					
 
+;; (setq python-shell-interpreter "ipython"
+;;       python-shell-interpreter-args "-i"
+;;       python-shell-prompt-detect-failure-warning nil)
+  
+;; (use-package jupyter
+;;   :ensure t
+;;   :commands (jupyter-run-server-repl
+;;              jupyter-run-repl
+;;              jupyter-server-list-kernels)
+;;   :init (eval-after-load 'jupyter-org-extensions ; conflicts with my helm config, I use <f2 #>
+;;           '(unbind-key "C-c h" jupyter-org-interaction-mode-map)))  
+
 
 ;; (use-package elpy
 ;;   :ensure t
@@ -225,7 +234,6 @@
 ;; To show inline images, select  then toggle ein:output-are-inlined-imoages to non-nil
 
 (use-package markdown-mode)  ;required by EIN
-
 
 (use-package org
   :defer t
@@ -269,7 +277,6 @@
 
 
 (use-package htmlize)
-
 (add-hook 'markdown-mode-hook 'auto-fill-mode)
 (add-hook 'markdown-mode-hook 'flyspell-mode)
 
@@ -289,4 +296,21 @@
 ;; note the snippets bundle needs to be installed separately
 ;; use M-x package-list-packages to list all packages available and install yasnippet-snippets or yasnippet-classic-snippets
 
-
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ein:markdown-header-scaling t)
+ '(ein:output-area-inlined-images t)
+ '(elpy-modules
+   '(elpy-module-company elpy-module-eldoc elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-sane-defaults))
+ '(package-selected-packages
+   '(good-scroll good-scroll-mode smooth-scrolling smooth-scroll yasnippet-snippets window-numbering use-package smart-mode-line scala-mode poly-R neotree miniedit magit htmlize hc-zenburn-theme exec-path-from-shell ess ein centaur-tabs auto-compile auctex all-the-icons))
+ '(pixel-scroll-mode nil))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
