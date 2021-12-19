@@ -330,6 +330,18 @@
           '(lambda ()
              (local-set-key (kbd "<C-return>") 'eir-eval-in-python))))
 
+;; Show indentation level
+(use-package highlight-indent-guides
+  :config
+  (add-hook 'python-mode-hook 'highlight-indent-guides-mode)
+  (setq highlight-indent-guides-method 'column))
+
+
+;; TODO: For pyvenv, currently Emacs session started from GUI app does not inherit 
+;; the enviroment variable $WORKON_HOME (there is no isssue with session started from zsh).
+;; Need to fix it for easier use of pyvenv-workon
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;    Emacs IPython Notebook
@@ -422,7 +434,7 @@
  '(elpy-modules
    '(elpy-module-company elpy-module-eldoc elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-sane-defaults))
  '(package-selected-packages
-   '(yasnippet-classic-snippets eval-in-repl-python eval-in-repl company-jedi jedi company-anaconda good-scroll good-scroll-mode smooth-scrolling smooth-scroll yasnippet-snippets window-numbering use-package smart-mode-line scala-mode poly-R neotree miniedit magit htmlize hc-zenburn-theme exec-path-from-shell ess ein centaur-tabs auto-compile auctex all-the-icons))
+   '(highlight-indent-guides yasnippet-classic-snippets eval-in-repl-python eval-in-repl company-jedi jedi company-anaconda good-scroll good-scroll-mode smooth-scrolling smooth-scroll yasnippet-snippets window-numbering use-package smart-mode-line scala-mode poly-R neotree miniedit magit htmlize hc-zenburn-theme exec-path-from-shell ess ein centaur-tabs auto-compile auctex all-the-icons))
  '(pixel-scroll-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
