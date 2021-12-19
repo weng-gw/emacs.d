@@ -69,7 +69,7 @@
   (setq windmove-wrap-around t )
 )
 (use-package exec-path-from-shell
-  :init (exec-path-from-shell-initialize))
+  :config (exec-path-from-shell-initialize))
 (setq-default ispell-program-name "aspell")
 (use-package miniedit
   :config (miniedit-install))
