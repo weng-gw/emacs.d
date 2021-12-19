@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+#Author : Guangwei Weng <weng.gw@outlook.com>
+# name: block of comment to show a separating title
+# key: bigtitle
+# --
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;    ${1:title}
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
