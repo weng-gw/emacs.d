@@ -130,6 +130,7 @@
   :config (yas-reload-all)
   (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
   (add-hook 'python-mode-hook 'yas-minor-mode)
+  (add-hook 'ess-mode-hook 'yas-minor-mode)
   ;;(add-hook 'LaTeX-mode-hook 'yas-minor-mode)
   (add-hook 'org-mode-hook 'yas-minor-mode)
   (add-hook 'markdown-mode-hook 'yas-minor-mode)
@@ -148,8 +149,8 @@
   :defer t
   :bind ("C-c C-s" . ess-switch-process)
   :config (setq ess-fancy-comments nil)
-  ;;(setq ess-use-company t)
-  ;;(add-hook 'ess-mode-hook 'company-mode)
+  (setq ess-use-company t)
+  (add-hook 'ess-mode-hook 'company-mode)
   )
 
 ;; Use ploymode for R markdown
@@ -266,7 +267,7 @@
        ;; invert the navigation direction if the the completion popup-isearch-match
        ;; is displayed on top (happens near the bottom of windows)
        company-tooltip-flip-when-above t)
- (global-company-mode t)
+ ;;(global-company-mode t)
  )
 
 ;; current use anaconda-mode for Python script mode
