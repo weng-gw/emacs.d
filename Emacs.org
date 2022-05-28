@@ -18,8 +18,8 @@
   (require 'package)
 
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			   ("org" . "https://orgmode.org/elpa/")
-			   ("elpa" . "https://elpa.gnu.org/packages/")))
+                           ("org" . "https://orgmode.org/elpa/")
+                           ("elpa" . "https://elpa.gnu.org/packages/")))
 
   (package-initialize)
   (unless package-archive-contents
@@ -31,7 +31,21 @@
 
   (require 'use-package)
   (setq use-package-always-ensure t)
+#+end_src
 
+** Auto Package Update
+[[https://github.com/rranelli/auto-package-update.el][Auto package update]] automatically updates installed packages if at least =auto-package-update-interval= days have passed since the last update.
+
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(use-package auto-package-update
+  :if (not (daemonp))
+  :custom
+  (auto-package-update-interval 28) ;; in days
+  (auto-package-update-prompt-before-update t)
+  (auto-package-update-delete-old-versions t)
+  (auto-package-update-hide-results t)
+  :config
+  (auto-package-update-maybe))
 #+end_src
 
 * UI Configuration
@@ -39,7 +53,7 @@
 ** Basic UI Configuration
 
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-  (setq inhibit-startup-message t)        ; Remove all startup message
+  (setq inhibit-startup-message nil)        ; Remove all startup message
   (scroll-bar-mode -1)        ; Disable visible scrollbar
   (tool-bar-mode -1)          ; Disable the toolbar
   (tooltip-mode -1)           ; Disable tooltips
@@ -50,6 +64,17 @@
   ;; Set font
   (set-face-attribute 'default nil :font "Menlo-13")    ;; Set default font
 
+  ;; Title Bar
+  (setq-default frame-title-format '("" user-login-name "@" system-name " - %b"))
+#+end_src
+
+** Discover My Major
+
+[[https://github.com/jguenther/discover-my-major][Discover my major]], a feature that discovers key bindings and their meaning for the current Emacs major mode.
+
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(use-package discover-my-major
+  :bind ("C-h C-m" . discover-my-major))
 #+end_src
 
 ** Line numbers
@@ -167,6 +192,13 @@ We can further use the following config to allow us move between windown with =s
 )
 #+end_src
 
+** Dashboard
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
+#+end_src
 
 * Keybinding Configuration
 ** Basic Keybinding
@@ -328,7 +360,7 @@ We can further use the following config to allow us move between windown with =s
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
 (defun wgw/org-babel-tangle-config ()
   (when (string-equal (buffer-file-name)
-                      (expand-file-name "~/Documents/Projects/runemacs/Emacs.org"))
+                      (expand-file-name "~/.emacs.d/Emacs.org"))
     ;; Dynamic scoping to the rescue
     (let ((org-confirm-babel-evaluate nil))
       (org-babel-tangle))))
@@ -419,22 +451,23 @@ Then we set =aspell= to be used by =ispell=.
 
 ** R
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-(use-package ess
-  :defer t
-  :bind ("C-c C-s" . ess-switch-process)
-  :config (setq ess-fancy-comments nil)
-  ;(setq ess-use-company t)
-  ;(add-hook 'ess-mode-hook 'company-mode)
-  )
+  (use-package ess
+    :defer t
+    :bind ("C-c C-s" . ess-switch-process)
+    ;:hook (ess-r-mode . company-mode)
+    :hook (ess-r-mode . lsp)
+    :config (setq ess-fancy-comments nil)
+    ;(setq ess-use-company t)
+    ;(add-hook 'ess-mode-hook 'company-mode)
+    )
+  ;; Use ploymode for R markdown
+  (use-package polymode
+    :defer t
+    )
 
-;; Use ploymode for R markdown
-(use-package polymode
-  :defer t
-  )
-
-(use-package poly-R
-  :defer t
-  )
+  (use-package poly-R
+    :defer t
+    )  
 #+end_src
 
 ** AucTex

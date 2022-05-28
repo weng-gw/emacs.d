@@ -6,8 +6,8 @@
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("org" . "https://orgmode.org/elpa/")
-			 ("elpa" . "https://elpa.gnu.org/packages/")))
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
 
 (package-initialize)
 (unless package-archive-contents
@@ -20,7 +20,17 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
-(setq inhibit-startup-message t)        ; Remove all startup message
+(use-package auto-package-update
+  :if (not (daemonp))
+  :custom
+  (auto-package-update-interval 28) ;; in days
+  (auto-package-update-prompt-before-update t)
+  (auto-package-update-delete-old-versions t)
+  (auto-package-update-hide-results t)
+  :config
+  (auto-package-update-maybe))
+
+(setq inhibit-startup-message nil)        ; Remove all startup message
 (scroll-bar-mode -1)        ; Disable visible scrollbar
 (tool-bar-mode -1)          ; Disable the toolbar
 (tooltip-mode -1)           ; Disable tooltips
@@ -30,6 +40,12 @@
 
 ;; Set font
 (set-face-attribute 'default nil :font "Menlo-13")    ;; Set default font
+
+;; Title Bar
+(setq-default frame-title-format '("" user-login-name "@" system-name " - %b"))
+
+(use-package discover-my-major
+  :bind ("C-h C-m" . discover-my-major))
 
 (column-number-mode)
 (global-display-line-numbers-mode t)
@@ -109,6 +125,11 @@
 
 (use-package window-numbering
   :init (window-numbering-mode 1))
+
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
 
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -203,7 +224,7 @@ _~_: modified
 
 (defun wgw/org-babel-tangle-config ()
   (when (string-equal (buffer-file-name)
-                      (expand-file-name "~/Documents/Projects/runemacs/Emacs.org"))
+                      (expand-file-name "~/.emacs.d/Emacs.org"))
     ;; Dynamic scoping to the rescue
     (let ((org-confirm-babel-evaluate nil))
       (org-babel-tangle))))
@@ -272,11 +293,12 @@ _~_: modified
 (use-package ess
   :defer t
   :bind ("C-c C-s" . ess-switch-process)
+  ;:hook (ess-r-mode . company-mode)
+  :hook (ess-r-mode . lsp)
   :config (setq ess-fancy-comments nil)
   ;(setq ess-use-company t)
   ;(add-hook 'ess-mode-hook 'company-mode)
   )
-
 ;; Use ploymode for R markdown
 (use-package polymode
   :defer t
