@@ -1,156 +1,280 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;    General Settings
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(package-initialize)
-(setq usepackage-always-ensure t)
-
 (setq user-full-name "Guangwei Weng"
       user-mail-address "wengx076@umn.edu")
-
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(unless (assoc-default "org" package-archives)
-  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
-
-
-(add-to-list 'load-path "~/.emacs.d/elisp") ;; path for customized pacakges
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-(setq use-package-verbose t)
-(setq use-package-always-ensure t)
-(require 'use-package)
-(use-package auto-compile
-  :defer t
-  :config (auto-compile-on-load-mode))
-(setq load-prefer-newer t)
-
-(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
-
-(setq delete-old-versions -1)
-(setq version-control t)
-(setq vc-make-backup-files t)
-(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
-
-(setq savehist-file "~/.emacs.d/savehist")
-(savehist-mode 1)
-(setq history-length t)
-(setq history-delete-duplicates t)
-(setq savehist-save-minibuffer-history 1)
-(setq savehist-additional-variables
-      '(kill-ring
-        search-ring
-        regexp-search-ring))
-
 (server-start)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(display-time-mode 1)
 
-(setq visible-bell 1)
-(setq column-number-mode t)
-(setq-default fill-column 80)
-;;(global- linum-mode t)
-(global-set-key (kbd "C-c l") 'goto-line)
-(setq inhibit-startup-message t)
-(set-frame-font "Menlo-13" t t)
-(add-to-list 'default-frame-alist '(font . "Menlo-13" ))
-(set-face-attribute 'default t :font "Menlo-13" )
-(show-paren-mode 1)
-(use-package smart-mode-line)
-(fset 'yes-or-no-p 'y-or-n-p)
+;; Initialize package sources
+(require 'package)
+
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			 ("org" . "https://orgmode.org/elpa/")
+			 ("elpa" . "https://elpa.gnu.org/packages/")))
+
+(package-initialize)
+(unless package-archive-contents
+ (package-refresh-contents))
+
+;; Initialize use-package on non-Linux platforms
+(unless (package-installed-p 'use-package)
+   (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+
+(setq inhibit-startup-message t)        ; Remove all startup message
+(scroll-bar-mode -1)        ; Disable visible scrollbar
+(tool-bar-mode -1)          ; Disable the toolbar
+(tooltip-mode -1)           ; Disable tooltips
+(set-fringe-mode 10)        ; Give some breathing room
+;;(menu-bar-mode -1)          ; Disable the menu bar
+(setq visible-bell 1)       ; Set up the visible bella
+
+;; Set font
+(set-face-attribute 'default nil :font "Menlo-13")    ;; Set default font
+
+(column-number-mode)
+(global-display-line-numbers-mode t)
+
+;; Disable line numbers for some modes
+(dolist (mode '(org-mode-hook
+		term-mode-hook
+		shell-mode-hook
+		eshell-mode-hook
+		latex-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+;; Use the default theme in VSCode
+(use-package doom-themes
+  :init (load-theme 'doom-dark+ t))
+
+;; NOTE: The first time you load your configuration on a new machine, you'll
+;; need to run the following command interactively so that mode line icons
+;; display correctly:
+;;
+;; M-x all-the-icons-install-fonts
+(use-package all-the-icons)
+
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 15)))
+
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 3))
+
+(use-package ivy
+  :diminish
+  :bind (("C-s" . swiper)
+	 :map ivy-minibuffer-map
+	 ("TAB" . ivy-alt-done)	
+	 ("C-l" . ivy-alt-done)
+	 ("C-j" . ivy-next-line)
+	 ("C-k" . ivy-previous-line)
+	 :map ivy-switch-buffer-map
+	 ("C-k" . ivy-previous-line)
+	 ("C-l" . ivy-done)
+	 ("C-d" . ivy-switch-buffer-kill)
+	 :map ivy-reverse-i-search-map
+	 ("C-k" . ivy-previous-line)
+	 ("C-d" . ivy-reverse-i-search-kill))
+  :config (ivy-mode 1))
+
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode 1))
+
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+	 ("C-x b" . counsel-ibuffer)
+	 ("C-x C-f" . counsel-find-file)
+	 :map minibuffer-local-map
+	 ("C-r" . 'counsel-minibuffer-history)))
+
+(use-package swiper)
+
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+
 (use-package window-numbering
   :init (window-numbering-mode 1))
-(progn
-  (require 'windmove)
-  ;; use Shift+arrow_keys to move cursor around split panes
-  (windmove-default-keybindings)
-  ;; when cursor is on edge, move to the other side, as in a torus space
-  (setq windmove-wrap-around t )
-)
-(use-package exec-path-from-shell
-  :config (exec-path-from-shell-initialize))
+
+;; Make ESC quit prompts
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+(use-package hydra)
+(defhydra hydra-buffer-menu (:color pink
+				    :hint nil)
+   "
+^Mark^             ^Unmark^           ^Actions^          ^Search
+^^^^^^^^-----------------------------------------------------------------
+_m_: mark          _u_: unmark        _x_: execute       _R_: re-isearch
+_s_: save          _U_: unmark up     _b_: bury          _I_: isearch
+_d_: delete        ^ ^                _g_: refresh       _O_: multi-occur
+_D_: delete up     ^ ^                _T_: files only: % -28`Buffer-menu-files-only
+_~_: modified
+"
+  ("m" Buffer-menu-mark)
+  ("u" Buffer-menu-unmark)
+  ("U" Buffer-menu-backup-unmark)
+  ("d" Buffer-menu-delete)
+  ("D" Buffer-menu-delete-backwards)
+  ("s" Buffer-menu-save)
+  ("~" Buffer-menu-not-modified)
+  ("x" Buffer-menu-execute)
+  ("b" Buffer-menu-bury)
+  ("g" revert-buffer)
+  ("T" Buffer-menu-toggle-files-only)
+  ("O" Buffer-menu-multi-occur :color blue)
+  ("I" Buffer-menu-isearch-buffers :color blue)
+  ("R" Buffer-menu-isearch-buffers-regexp :color blue)
+  ("c" nil "cancel")
+  ("v" Buffer-menu-select "select" :color blue)
+  ("o" Buffer-menu-other-window "other-window" :color blue)
+  ("q" quit-window "quit" :color blue))
+
+(define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
+
+(defun wgw/org-font-setup ()
+  ;; Replace list hyphen with dot
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  ;; Set faces for heading levels
+  (dolist (face '((org-level-1 . 1.3)
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.05)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.1)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil  :weight 'bold :height (cdr face))))
+
+(defun wgw/org-mode-setup ()
+  (org-indent-mode)
+  ;;(variable-pitch-mode 1)
+  (visual-line-mode 1))
+
+(use-package org
+  :init
+  (add-hook 'org-mode-hook 'flyspell-mode)
+  :hook (org-mode . wgw/org-mode-setup)
+  :config
+  (setq org-ellipsis " ▾")
+  (wgw/org-font-setup))
+
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+(defun wgw/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :hook (org-mode . wgw/org-mode-visual-fill))
+
+(org-babel-do-load-languages
+  'org-babel-load-languages
+  '((emacs-lisp . t)
+    (python . t)))
+
+(require 'org-tempo)
+
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("elconf" . "src emacs-lisp :tangle ./init.el :mkdirp yes"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
+
+(defun wgw/org-babel-tangle-config ()
+  (when (string-equal (buffer-file-name)
+                      (expand-file-name "~/Documents/Projects/runemacs/Emacs.org"))
+    ;; Dynamic scoping to the rescue
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle))))
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'wgw/org-babel-tangle-config)))
+
+(defun wgw/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . wgw/lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+
+(use-package lsp-treemacs
+  :after lsp)
+
+(use-package lsp-ivy)
+
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-map
+         ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+         ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+
+(use-package projectile
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :custom ((projectile-completion-system 'ivy))
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  ;; NOTE: Set this to the folder where you keep your Git repos!
+  (when (file-directory-p "~/Documents/Projects/")
+    (setq projectile-project-search-path '("~/Documents/Projects")))
+  (setq projectile-switch-project-action #'projectile-dired))
+
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
+
+(use-package magit
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+;; (use-package evil-magit
+;;   :after magit)
+
 (setq-default ispell-program-name "aspell")
-(use-package miniedit
-  :config (miniedit-install))
-(time-stamp)
-(add-hook 'write-file-hooks 'time-stamp)
 
-
-(use-package hc-zenburn-theme
-  :config (load-theme 'hc-zenburn t))
-
-;; (use-package color-theme-sanityinc-tomorrow
-;;   :config (color-theme-sanityinc-tomorrow-day))
-
-;; Recentf is a minor mode that builds a list of recently opened files.
-;; This list is is automatically saved across sessions on exiting Emacs
-(use-package recentf
-  :init (recentf-mode 1))
-
-(use-package neotree
-  :config
-  (global-set-key (kbd "C-c t") 'neotree-toggle)
-  (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
-
-(use-package all-the-icons) ;; this is used by centaur-tabs
-;; After adding this, need to run M-x all-the-icons-install-fonts to install the icons
-(use-package centaur-tabs
-  :demand
-  :config
-  (centaur-tabs-mode t)
-  (setq centaur-tabs-set-icons t)
-  (setq centaur-tabs-set-bar 'over)
-  (setq centaur-tabs-height 32)
-  (setq centaur-tabs-style "bar")
-  :bind
-  ("<s-left>" . centaur-tabs-backward)
-  ("<s-right>" . centaur-tabs-forward)
-  ("<s-up>" . centaur-tabs-backward-group)
-  ("<s-down>" . centaur-tabs-forward-group))
-
-;; The library uniquify overrides Emacs’ default mechanism for making buffer names unique
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
-(setq uniquify-separator "/")
-(setq uniquify-after-kill-buffer-p t)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;    Code templating
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; template was deprecated and will use snippets for future templates
-;; (require 'template)
-;; (template-initialize)
-
-(use-package yasnippet
-  :config (yas-reload-all)
-  (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
-  (add-hook 'python-mode-hook 'yas-minor-mode)
-  (add-hook 'ess-mode-hook 'yas-minor-mode)
-  (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
-  (add-hook 'org-mode-hook 'yas-minor-mode)
-  (add-hook 'markdown-mode-hook 'yas-minor-mode)
-  (add-hook 'scala-mode-hook 'yas-minor-mode)
-  (add-hook 'lisp-mode-hook 'yas-minor-mode))
-;; note the snippets bundle needs to be installed separately
-;; use M-x package-list-packages to list all packages available and install yasnippet-snippets or yasnippet-classic-snippets
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;    Scientific Computing with R/ESS
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package ess
   :defer t
   :bind ("C-c C-s" . ess-switch-process)
   :config (setq ess-fancy-comments nil)
-  (setq ess-use-company t)
-  (add-hook 'ess-mode-hook 'company-mode)
+  ;(setq ess-use-company t)
+  ;(add-hook 'ess-mode-hook 'company-mode)
   )
 
 ;; Use ploymode for R markdown
@@ -162,11 +286,6 @@
   :defer t
   )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;    LaTex with auctex
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package auctex
   :hook  (LaTeX-mode . flyspell-mode)
   :init
@@ -189,165 +308,41 @@
   (setq TeX-source-correlate-start-server t)
   )
 
+(use-package yasnippet
+  :config (yas-reload-all)
+  (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+  (add-hook 'python-mode-hook 'yas-minor-mode)
+  (add-hook 'ess-mode-hook 'yas-minor-mode)
+  (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
+  (add-hook 'org-mode-hook 'yas-minor-mode)
+  (add-hook 'markdown-mode-hook 'yas-minor-mode)
+  (add-hook 'scala-mode-hook 'yas-minor-mode)
+  (add-hook 'lisp-mode-hook 'yas-minor-mode))
+;; note the snippets bundle needs to be installed separately
+;; use M-x package-list-packages to list all packages available and install yasnippet-snippets or yasnippet-classic-snippets`
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;    Git with magit
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package magit
-  :defer t
-  :bind ("C-c g" . magit-status))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;    Python configuration
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Desired features
-;; 1. Auto complete in Python script buffer
-;; 2. Send code line or region to buffer
-
-;; (use-package python-mode
-;;   :ensure t
-;;   :init
-;;   (pyvenv-activate (expand-file-name "~/opt/anaconda3/envs/py38"))
-;;   (setq py-shell-name "ipython")
-  ;; (setq python-shell-interpreter "ipython"
-  ;; 	python-shell-interpreter-args "-i"
-  ;; 	python-shell-prompt-detect-failure-warning nil)
-;;  )					
-  
-;; (use-package jupyter
-;;   :ensure t
-;;   :commands (jupyter-run-server-repl
-;;              jupyter-run-repl
-;;              jupyter-server-list-kernels)
-;;   :init (eval-after-load 'jupyter-org-extensions ; conflicts with my helm config, I use <f2 #>
-;;           '(unbind-key "C-c h" jupyter-org-interaction-mode-map)))  
-
-
-;; Elpy was tried and deprecated because it becomes lagging with long code files and
-;; data science project with large data tables
-;;
-;; (use-package elpy
-;;   :ensure t
-;;   :after python  
-;;   :config (elpy-enable)
-;;   (setq elpy-rpc-backend "jedi")  
-;;   (setq company-idle-delay 0.5)
-;;   (setq elpy-company-add-completion-from-shell nil)
-;;   ;;(add-hook 'python-mode-hook (lambda () (auto-complete-mode -1)))
-;;   ;;diable auto-complete-mode since it slows down editing and company is the default dependence
-;;   (pyvenv-activate (expand-file-name "~/opt/anaconda3/envs/py38"))
-;;   ;; and note that you need to install jupyter console for this enviromnet with 
-;;   ;; conda install -c anaconda jupyter_console
-;;   (remove-hook 'elpy-modules 'elpy-module-flymake)
-;;   (setq python-shell-interpreter "jupyter"
-;; 	python-shell-interpreter-args "console --simple-prompt"
-;; 	       python-shell-prompt-detect-failure-warning nil)
-;; 	 (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
-;; 	 (setq elpy-shell-echo-output nil);; this command is used for fixing ^G problem in MacOS
-;; 	 )
-;;Note after install elpy, do not remove the custom-set-varaibles added by Emacs in the end
-
-;; use company mode for auto completion in Python
-;; see https://gist.github.com/yiufung/d8216038252f0488198e8b6af1e2ece4
-(use-package company
- :ensure t
- :config
- (setq company-idle-delay 0
-       company-minimum-prefix-length 2
-       company-show-numbers t
-       company-tooltip-limit 10
-       company-tooltip-align-annotations t
-       ;; invert the navigation direction if the the completion popup-isearch-match
-       ;; is displayed on top (happens near the bottom of windows)
-       company-tooltip-flip-when-above t)
- ;;(global-company-mode t)
- )
-
-;; current use anaconda-mode for Python script mode
-(use-package anaconda-mode
+(use-package lsp-pyright
   :ensure t
-  :after python
-  :config
-  (add-hook 'python-mode-hook 'anaconda-mode)
-  (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
-  (setq python-shell-interpreter "ipython")
-  ;;(add-hook 'python-mode-hook 'company-mode)
-  )
-(use-package company-anaconda
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-pyright)
+                          (lsp))))  ; or lsp-deferred
+
+(use-package python-mode
   :ensure t
-  :init (require 'rx)
-  :after (company)
-  :config
-  (add-to-list 'company-backends 'company-anaconda)
+  ;:hook (python-mode . lsp)
+  ;:custom
+  ;; NOTE: Set these if Python 3 is called "python3" on your system!
+  ;;(python-shell-interpreter "ipython")
+  ;; (dap-python-executable "python3")
+  ;(dap-python-debugger 'debugpy)
+  ;:config
+  ;(require 'dap-python)
   )
-;;make sure you install jedi and epc, e.g., conda/pip install jedi epc, in your current enviroment
 
-;; Looks like the below code is not needed, but keep it for now
-;;
-;; If you really want to try with jedi+company, use below scripts it
-;; (remove the :disabled tag)
-;; (use-package jedi
-;;   :disabled
-;;   :after (epc pos-tip)
-;;   :init
-;;   (add-hook 'python-mode-hook 'jedi:setup)
-;;   (add-hook 'python-mode-hook 'jedi:ac-setup)
-;;   :config
-;;   ;; For setup
-;;   ;; http://d.hatena.ne.jp/n-channel/20131220/1387551080
-;;   ;; and this:
-;;   ;; http://kenbell.hatenablog.com/entry/2017/01/15/112344
-
-;;   ;; Under windows, process might very long and EPC may fail.
-;;   ;; Set it larger. What a bummer...
-;;   ;;(if (memq system-type '(ms-dos windows-nt))
-;;   ;;(setq epc:accept-process-timeout 1000))
-;;   )
-;; (use-package company-jedi
-;;   :disabled
-;;   :ensure t
-;;   :config)
-
-
-;; Implementing repl buffer with eval-in-repl, to have Ctrl-Enter to send code to buffer
-;;
-;; Still have issues 1. Code sent to reply have duplicated last char 2. Code region are not
-;; copied to reply
-;;
-;; TODO: fixing issue 1&2
-;; TODO: try jupyter mode to check implementing a VSCode style IDE pattern
-(use-package eval-in-repl
+(use-package pyvenv
   :config
-  (setq eir-repl-placement 'right)
-  (require 'eval-in-repl-python)
-  (add-hook 'python-mode-hook
-          '(lambda ()
-             (local-set-key (kbd "<C-return>") 'eir-eval-in-python))))
+  (add-hook 'python-mode-hook 'pyvenv-mode ))
 
-;; Show indentation level
-(use-package highlight-indent-guides
-  :config
-  (add-hook 'python-mode-hook 'highlight-indent-guides-mode)
-  (setq highlight-indent-guides-method 'column))
-
-
-;; TODO: For pyvenv, currently Emacs session started from GUI app does not inherit 
-;; the enviroment variable $WORKON_HOME (there is no isssue with session started from zsh).
-;; Need to fix it for easier use of pyvenv-workon
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;    Emacs IPython Notebook
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package ein
   :defer t
   :config (require 'ein)
@@ -356,90 +351,4 @@
   (require 'ein-notebook)
   (require 'ein-subpackages)
   )
-;; to set for styling markdonw headings
-;; M-x customize-group RET ein:markdown-faces RET toggle ein:markdown-header-scaling  to non-nil
-;; To show inline images, select  then toggle ein:output-are-inlined-imoages to non-nil
-
-(use-package markdown-mode)  ;required by EIN
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;    Orgmode
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package org
-  :defer t
-  :init
-  (add-hook 'org-mode-hook 'flyspell-mode)
-  (add-hook 'org-mode-hook 'auto-fill-mode)
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((R . t)
-     (python . t)))
-  (setq org-src-window-setup 'other-frame)
-  (setq org-publish-project-alist
-      '(
-
-  ("org-ianbarton"
-          ;; Path to your org files.
-          :base-directory "~/Documents/PersonalPage/"
-          :base-extension "org"
-
-          ;; Path to your Jekyll project.
-          :publishing-directory "~/Documents/PersonalPage/"
-          :recursive t
-          :publishing-function org-html-publish-to-html
-          :headline-levels 4
-          :html-extension "html"
-          :body-only t ;; Only export section between <body> </body>
-    )
-
-
-    ("org-static-ian"
-          :base-directory "~/Documents/PersonalPage/"
-          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|php"
-          :publishing-directory "~/Documents/PersonalPage/"
-          :recursive t
-          :publishing-function org-publish-attachment)
-
-    ("ian" :components ("org-ianbarton" "org-static-ian"))
-
-))
-  )
-
-
-(use-package htmlize)
-(add-hook 'markdown-mode-hook 'auto-fill-mode)
-(add-hook 'markdown-mode-hook 'flyspell-mode)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;    Scala mode
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package scala-mode
-  :interpreter
-  ("scala" . scala-mode))
-
-
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ein:markdown-header-scaling t)
- '(ein:output-area-inlined-images t)
- '(elpy-modules
-   '(elpy-module-company elpy-module-eldoc elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-sane-defaults))
- '(package-selected-packages
-   '(highlight-indent-guides yasnippet-classic-snippets eval-in-repl-python eval-in-repl company-jedi jedi company-anaconda good-scroll good-scroll-mode smooth-scrolling smooth-scroll yasnippet-snippets window-numbering use-package smart-mode-line scala-mode poly-R neotree miniedit magit htmlize hc-zenburn-theme exec-path-from-shell ess ein centaur-tabs auto-compile auctex all-the-icons))
- '(pixel-scroll-mode nil))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(use-package markdown-mode)

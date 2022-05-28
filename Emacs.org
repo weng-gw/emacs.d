@@ -1,0 +1,551 @@
+#+title: Emacs Configuration
+
+* Introduction
+
+* Tips for Use
+
+* Basic Info
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (setq user-full-name "Guangwei Weng"
+        user-mail-address "wengx076@umn.edu")
+  (server-start)
+#+end_src
+
+* Package System Setup
+
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  ;; Initialize package sources
+  (require 'package)
+
+  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			   ("org" . "https://orgmode.org/elpa/")
+			   ("elpa" . "https://elpa.gnu.org/packages/")))
+
+  (package-initialize)
+  (unless package-archive-contents
+   (package-refresh-contents))
+
+  ;; Initialize use-package on non-Linux platforms
+  (unless (package-installed-p 'use-package)
+     (package-install 'use-package))
+
+  (require 'use-package)
+  (setq use-package-always-ensure t)
+
+#+end_src
+
+* UI Configuration
+
+** Basic UI Configuration
+
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (setq inhibit-startup-message t)        ; Remove all startup message
+  (scroll-bar-mode -1)        ; Disable visible scrollbar
+  (tool-bar-mode -1)          ; Disable the toolbar
+  (tooltip-mode -1)           ; Disable tooltips
+  (set-fringe-mode 10)        ; Give some breathing room
+  ;;(menu-bar-mode -1)          ; Disable the menu bar
+  (setq visible-bell 1)       ; Set up the visible bella
+
+  ;; Set font
+  (set-face-attribute 'default nil :font "Menlo-13")    ;; Set default font
+
+#+end_src
+
+** Line numbers
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (column-number-mode)
+  (global-display-line-numbers-mode t)
+
+  ;; Disable line numbers for some modes
+  (dolist (mode '(org-mode-hook
+		  term-mode-hook
+		  shell-mode-hook
+		  eshell-mode-hook
+		  latex-mode-hook))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))  
+#+end_src
+
+** Color Theme
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  ;; Use the default theme in VSCode
+  (use-package doom-themes
+    :init (load-theme 'doom-dark+ t))
+#+end_src
+
+** Better Modeline
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  ;; NOTE: The first time you load your configuration on a new machine, you'll
+  ;; need to run the following command interactively so that mode line icons
+  ;; display correctly:
+  ;;
+  ;; M-x all-the-icons-install-fonts
+  (use-package all-the-icons)
+
+  (use-package doom-modeline
+    :ensure t
+    :init (doom-modeline-mode 1)
+    :custom ((doom-modeline-height 15)))
+#+end_src
+
+** Delimeters
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
+
+** Which Key
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package which-key
+    :init (which-key-mode)
+    :diminish which-key-mode
+    :config
+    (setq which-key-idle-delay 3))
+#+end_src
+
+** Ivy, Counsel and Swiper
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package ivy
+    :diminish
+    :bind (("C-s" . swiper)
+	   :map ivy-minibuffer-map
+	   ("TAB" . ivy-alt-done)	
+	   ("C-l" . ivy-alt-done)
+	   ("C-j" . ivy-next-line)
+	   ("C-k" . ivy-previous-line)
+	   :map ivy-switch-buffer-map
+	   ("C-k" . ivy-previous-line)
+	   ("C-l" . ivy-done)
+	   ("C-d" . ivy-switch-buffer-kill)
+	   :map ivy-reverse-i-search-map
+	   ("C-k" . ivy-previous-line)
+	   ("C-d" . ivy-reverse-i-search-kill))
+    :config (ivy-mode 1))
+
+  (use-package ivy-rich
+    :init
+    (ivy-rich-mode 1))
+
+  (use-package counsel
+    :bind (("M-x" . counsel-M-x)
+	   ("C-x b" . counsel-ibuffer)
+	   ("C-x C-f" . counsel-find-file)
+	   :map minibuffer-local-map
+	   ("C-r" . 'counsel-minibuffer-history)))
+
+  (use-package swiper)  
+#+end_src
+
+** Helpful Help Commands
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package helpful
+    :custom
+    (counsel-describe-function-function #'helpful-callable)
+    (counsel-describe-variable-function #'helpful-variable)
+    :bind
+    ([remap describe-function] . counsel-describe-function)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-variable] . counsel-describe-variable)
+    ([remap describe-key] . helpful-key))  
+#+end_src
+
+** Window-numbering
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package window-numbering
+    :init (window-numbering-mode 1))
+#+end_src
+
+We can further use the following config to allow us move between windown with =shift= + arrow keys.
+
+#+begin_src emacs-lisp
+(progn
+  (require 'windmove)
+  ;; use Shift+arrow_keys to move cursor around split panes
+  (windmove-default-keybindings)
+  ;; when cursor is on edge, move to the other side, as in a torus space
+  (setq windmove-wrap-around t )
+)
+#+end_src
+
+
+* Keybinding Configuration
+** Basic Keybinding
+#+begin_src emacs-lisp
+  ;; Set key global key bindings
+  (global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
+
+  ;;Set key in modes
+  (define-key emacs-lisp-mode-map (kbd "C-x M-t") 'counsel-load-theme)
+
+#+end_src
+
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  ;; Make ESC quit prompts
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+#+end_src
+
+** general
+#+begin_src emacs-lisp
+  (use-package general
+    :config
+    (general-create-definer rune/leader-keys
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC")
+
+    (rune/leader-keys
+      "t"  '(:ignore t :which-key "toggles")
+      "tt" '(counsel-load-theme :which-key "choose theme")))
+#+end_src
+
+** evil
+#+begin_src emacs-lisp
+  (use-package evil
+    :init
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t)
+    (setq evil-want-C-i-jump nil)
+    :config
+    (evil-mode 1)
+    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+    (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+
+    ;; Use visual line motions even outside of visual-line-mode buffers
+    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+    (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+    (evil-set-initial-state 'messages-buffer-mode 'normal)
+    (evil-set-initial-state 'dashboard-mode 'normal))
+
+  (use-package evil-collection
+    :after evil
+    :config
+    (evil-collection-init))
+#+end_src
+
+** hydra
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package hydra)
+  (defhydra hydra-buffer-menu (:color pink
+				      :hint nil)
+     "
+  ^Mark^             ^Unmark^           ^Actions^          ^Search
+  ^^^^^^^^-----------------------------------------------------------------
+  _m_: mark          _u_: unmark        _x_: execute       _R_: re-isearch
+  _s_: save          _U_: unmark up     _b_: bury          _I_: isearch
+  _d_: delete        ^ ^                _g_: refresh       _O_: multi-occur
+  _D_: delete up     ^ ^                _T_: files only: % -28`Buffer-menu-files-only
+  _~_: modified
+  "
+    ("m" Buffer-menu-mark)
+    ("u" Buffer-menu-unmark)
+    ("U" Buffer-menu-backup-unmark)
+    ("d" Buffer-menu-delete)
+    ("D" Buffer-menu-delete-backwards)
+    ("s" Buffer-menu-save)
+    ("~" Buffer-menu-not-modified)
+    ("x" Buffer-menu-execute)
+    ("b" Buffer-menu-bury)
+    ("g" revert-buffer)
+    ("T" Buffer-menu-toggle-files-only)
+    ("O" Buffer-menu-multi-occur :color blue)
+    ("I" Buffer-menu-isearch-buffers :color blue)
+    ("R" Buffer-menu-isearch-buffers-regexp :color blue)
+    ("c" nil "cancel")
+    ("v" Buffer-menu-select "select" :color blue)
+    ("o" Buffer-menu-other-window "other-window" :color blue)
+    ("q" quit-window "quit" :color blue))
+
+  (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
+
+#+end_src
+
+* Org Mode
+
+** Basic Configuration
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (defun wgw/org-font-setup ()
+    ;; Replace list hyphen with dot
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([-]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+    ;; Set faces for heading levels
+    (dolist (face '((org-level-1 . 1.3)
+                    (org-level-2 . 1.1)
+                    (org-level-3 . 1.05)
+                    (org-level-4 . 1.0)
+                    (org-level-5 . 1.1)
+                    (org-level-6 . 1.1)
+                    (org-level-7 . 1.1)
+                    (org-level-8 . 1.1)))
+      (set-face-attribute (car face) nil  :weight 'bold :height (cdr face))))
+
+  (defun wgw/org-mode-setup ()
+    (org-indent-mode)
+    ;;(variable-pitch-mode 1)
+    (visual-line-mode 1))
+
+  (use-package org
+    :init
+    (add-hook 'org-mode-hook 'flyspell-mode)
+    :hook (org-mode . wgw/org-mode-setup)
+    :config
+    (setq org-ellipsis " ▾")
+    (wgw/org-font-setup))
+
+  (use-package org-bullets
+    :after org
+    :hook (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+  (defun wgw/org-mode-visual-fill ()
+    (setq visual-fill-column-width 100
+          visual-fill-column-center-text t)
+    (visual-fill-column-mode 1))
+
+  (use-package visual-fill-column
+    :hook (org-mode . wgw/org-mode-visual-fill))
+#+end_src
+
+** Babel Configuration
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(org-babel-do-load-languages
+  'org-babel-load-languages
+  '((emacs-lisp . t)
+    (python . t)))
+
+(require 'org-tempo)
+
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("elconf" . "src emacs-lisp :tangle ./init.el :mkdirp yes"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
+#+end_src
+
+** Org tangle Configuration
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(defun wgw/org-babel-tangle-config ()
+  (when (string-equal (buffer-file-name)
+                      (expand-file-name "~/Documents/Projects/runemacs/Emacs.org"))
+    ;; Dynamic scoping to the rescue
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle))))
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'wgw/org-babel-tangle-config)))
+#+end_src
+
+* Development
+** Language Server
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (defun wgw/lsp-mode-setup ()
+    (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+    (lsp-headerline-breadcrumb-mode))
+
+  (use-package lsp-mode
+    :commands (lsp lsp-deferred)
+    :hook (lsp-mode . wgw/lsp-mode-setup)
+    :init
+    (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+    :config
+    (lsp-enable-which-key-integration t))
+
+  (use-package lsp-ui
+    :hook (lsp-mode . lsp-ui-mode)
+    :custom
+    (lsp-ui-doc-position 'bottom))
+
+  (use-package lsp-treemacs
+    :after lsp)
+
+  (use-package lsp-ivy)
+#+end_src
+
+** Company Mode
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-map
+         ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+         ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+#+end_src
+** Projectile
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package projectile
+    :diminish projectile-mode
+    :config (projectile-mode)
+    :custom ((projectile-completion-system 'ivy))
+    :bind-keymap
+    ("C-c p" . projectile-command-map)
+    :init
+    ;; NOTE: Set this to the folder where you keep your Git repos!
+    (when (file-directory-p "~/Documents/Projects/")
+      (setq projectile-project-search-path '("~/Documents/Projects")))
+    (setq projectile-switch-project-action #'projectile-dired))
+
+  (use-package counsel-projectile
+    :config (counsel-projectile-mode))
+#+end_src
+
+** Magit
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package magit
+    :custom
+    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+  ;; (use-package evil-magit
+  ;;   :after magit)
+#+end_src
+
+** Aspell
+We use =aspell= to as backend for =ispell= in Emacs. Before we config =ispell=, we need to first install =aspell=
+
+#+begin_src shell
+brew install aspell
+#+end_src
+
+Then we set =aspell= to be used by =ispell=.
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(setq-default ispell-program-name "aspell")
+#+end_src
+
+** R
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(use-package ess
+  :defer t
+  :bind ("C-c C-s" . ess-switch-process)
+  :config (setq ess-fancy-comments nil)
+  ;(setq ess-use-company t)
+  ;(add-hook 'ess-mode-hook 'company-mode)
+  )
+
+;; Use ploymode for R markdown
+(use-package polymode
+  :defer t
+  )
+
+(use-package poly-R
+  :defer t
+  )
+#+end_src
+
+** AucTex
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(use-package auctex
+  :hook  (LaTeX-mode . flyspell-mode)
+  :init
+  (add-hook 'LaTeX-mode-hook 'auto-fill-mode)
+  (setq TeX-PDF-mode t)
+  (setq TeX-view-program-selection '((output-pdf "Skim")))
+  (setq TeX-view-program-list
+	'(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+  (add-hook 'LaTeX-mode-hook
+	    (lambda()
+	      (latex-math-mode 1)
+	      (add-to-list
+	       'TeX-command-list' ("XeLaTeX" "%`xelatex -synctex=1%(mode)%' %t" TeX-run-TeX nil t))
+	      (setq TeX-command-default "XeLaTeX")
+	      (setq TeX-show-compilation nil)))
+  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (setq TeX-source-correlate-method 'synctex)
+  (setq TeX-source-correlate-mode t)
+  (setq TeX-source-correlate-start-server t)
+  )
+#+End_src
+
+** Yas-snippet
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package yasnippet
+    :config (yas-reload-all)
+    (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+    (add-hook 'python-mode-hook 'yas-minor-mode)
+    (add-hook 'ess-mode-hook 'yas-minor-mode)
+    (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
+    (add-hook 'org-mode-hook 'yas-minor-mode)
+    (add-hook 'markdown-mode-hook 'yas-minor-mode)
+    (add-hook 'scala-mode-hook 'yas-minor-mode)
+    (add-hook 'lisp-mode-hook 'yas-minor-mode))
+  ;; note the snippets bundle needs to be installed separately
+  ;; use M-x package-list-packages to list all packages available and install yasnippet-snippets or yasnippet-classic-snippets`
+#+end_src
+
+** Python
+*** Python script
+Make sure we install the python language server first
+#+begin_src shell
+  pip install --user "python-lsp-server[all]"
+  pip install --user "python-language-server[all]" 
+  ## python-language-server is not maintained
+#+end_src
+
+#+begin_src emacs-lisp 
+  (use-package lsp-python-ms
+    :ensure t
+    :hook (python-mode . (lambda ()
+                           (require 'lsp-python-ms)
+                           (lsp)))
+    :init
+    ;(setq lsp-python-ms-executable (executable-find "python-language-server"))
+    (setq lsp-python-ms-auto-install-server t)
+    )
+#+end_src
+
+Python Language server and =lsp-python-ms= have been archived and are now replaced by =pyright= ([[https://github.com/emacs-lsp/lsp-python-ms/]]).
+
+#+begin_src shell
+  pip install pyright
+#+end_src
+
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(use-package lsp-pyright
+  :ensure t
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-pyright)
+                          (lsp))))  ; or lsp-deferred
+#+end_src
+
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package python-mode
+    :ensure t
+    ;:hook (python-mode . lsp)
+    ;:custom
+    ;; NOTE: Set these if Python 3 is called "python3" on your system!
+    ;;(python-shell-interpreter "ipython")
+    ;; (dap-python-executable "python3")
+    ;(dap-python-debugger 'debugpy)
+    ;:config
+    ;(require 'dap-python)
+    )
+#+end_src
+
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package pyvenv
+    :config
+    (add-hook 'python-mode-hook 'pyvenv-mode ))
+#+end_src
+
+*** EIN
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package ein
+    :defer t
+    :config (require 'ein)
+    (setq ein:completion-backend 'ein:use-company-jedi-backend)
+    (require 'ein-loaddefs)
+    (require 'ein-notebook)
+    (require 'ein-subpackages)
+    )
+  (use-package markdown-mode)
+#+end_src
+
+
+
+
