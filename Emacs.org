@@ -4,11 +4,16 @@
 
 * Tips for Use
 
-* Basic Info
+* Basic Config
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (setq user-full-name "Guangwei Weng"
         user-mail-address "wengx076@umn.edu")
   (server-start)
+
+  ;; Add exec-path-from-shell to ensure Emacs started from Mac App (homebrew Cask)
+  ;; can still inherit shell vars
+  (use-package exec-path-from-shell
+  :config (exec-path-from-shell-initialize))
 #+end_src
 
 * Package System Setup
@@ -450,6 +455,9 @@ Then we set =aspell= to be used by =ispell=.
 #+end_src
 
 ** R
+
+Besides =ESS=, we also add language server for =R= for richer IDE functionality. See [[https://github.com/REditorSupport/languageserver]].
+
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (use-package ess
     :defer t
