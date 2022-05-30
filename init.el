@@ -239,7 +239,7 @@ _~_: modified
   :ensure nil
   :commands (dired dired-jump)
   :bind (("C-x C-j" . dired-jump))
-  :custom ((dired-listing-switches "-agho --group-directories-first"))
+  ;;:custom ((dired-listing-switches "-agho --group-directories-first"))
   ;; :config
   ;; (evil-collection-define-key 'normal 'dired-mode-map
   ;;   "h" 'dired-single-up-directory
@@ -389,9 +389,23 @@ _~_: modified
   ;(require 'dap-python)
   )
 
+(use-package highlight-indent-guides
+  :config
+  (add-hook 'python-mode-hook 'highlight-indent-guides-mode)
+  (setq highlight-indent-guides-method 'column))
+
 (use-package pyvenv
+  :init (setenv "WORKON_HOME" "/opt/homebrew/Caskroom/miniforge/base/envs")
   :config
   (add-hook 'python-mode-hook 'pyvenv-mode ))
+
+(use-package eval-in-repl
+  :config
+  (setq eir-repl-placement 'right)
+  (require 'eval-in-repl-python)
+  (add-hook 'python-mode-hook
+          '(lambda ()
+             (local-set-key (kbd "<C-return>") 'eir-eval-in-python))))
 
 (use-package ein
   :defer t
