@@ -373,16 +373,20 @@ _~_: modified
 
 (use-package lsp-pyright
   :ensure t
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-pyright)
+  :hook (python-mode . (lambda ()                      
+    (require 'lsp-pyright)
                           (lsp))))  ; or lsp-deferred
 
 (use-package python-mode
   :ensure t
   ;:hook (python-mode . lsp)
-  ;:custom
+  :custom
   ;; NOTE: Set these if Python 3 is called "python3" on your system!
-  ;;(python-shell-interpreter "ipython")
+  ((python-shell-interpreter "ipython")
+   (python-shell-interpreter-args "-i --simple-prompt")     
+   )
+  :config (add-to-list 'python-shell-completion-native-disabled-interpreters
+           "ipython")
   ;; (dap-python-executable "python3")
   ;(dap-python-debugger 'debugpy)
   ;:config
@@ -394,11 +398,6 @@ _~_: modified
   (add-hook 'python-mode-hook 'highlight-indent-guides-mode)
   (setq highlight-indent-guides-method 'column))
 
-(use-package pyvenv
-  :init (setenv "WORKON_HOME" "/opt/homebrew/Caskroom/miniforge/base/envs")
-  :config
-  (add-hook 'python-mode-hook 'pyvenv-mode ))
-
 (use-package eval-in-repl
   :config
   (setq eir-repl-placement 'right)
@@ -406,6 +405,11 @@ _~_: modified
   (add-hook 'python-mode-hook
           '(lambda ()
              (local-set-key (kbd "<C-return>") 'eir-eval-in-python))))
+
+(use-package conda
+  ;; :init (;(conda-env-initialize-interactive-shells)
+  ;;        (conda-env-initialize-eshell))
+  :custom ((conda-anaconda-home "/opt/homebrew/Caskroom/miniforge/base/")))
 
 (use-package ein
   :defer t

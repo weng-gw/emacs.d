@@ -551,6 +551,7 @@ Besides =ESS=, we also add language server for =R= for richer IDE functionality.
 
 ** Python
 *** Python script
+**** Microsoft Python Language Server (Deprecated)
 Make sure we install the python language server first
 #+begin_src shell
   pip install --user "python-lsp-server[all]"
@@ -572,6 +573,7 @@ Make sure we install the python language server first
 
 Python Language server and =lsp-python-ms= have been archived and are now replaced by =pyright= ([[https://github.com/emacs-lsp/lsp-python-ms/]]).
 
+**** Pyright
 #+begin_src shell
   pip install pyright
 #+end_src
@@ -579,18 +581,23 @@ Python Language server and =lsp-python-ms= have been archived and are now replac
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
 (use-package lsp-pyright
   :ensure t
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-pyright)
+  :hook (python-mode . (lambda ()                      
+    (require 'lsp-pyright)
                           (lsp))))  ; or lsp-deferred
 #+end_src
 
+**** Python Mode
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (use-package python-mode
     :ensure t
     ;:hook (python-mode . lsp)
-    ;:custom
+    :custom
     ;; NOTE: Set these if Python 3 is called "python3" on your system!
-    ;;(python-shell-interpreter "ipython")
+    ((python-shell-interpreter "ipython")
+     (python-shell-interpreter-args "-i --simple-prompt")     
+     )
+    :config (add-to-list 'python-shell-completion-native-disabled-interpreters
+             "ipython")
     ;; (dap-python-executable "python3")
     ;(dap-python-debugger 'debugpy)
     ;:config
@@ -598,6 +605,7 @@ Python Language server and =lsp-python-ms= have been archived and are now replac
     )
 #+end_src
 
+**** Highlight indentation
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (use-package highlight-indent-guides
     :config
@@ -605,7 +613,10 @@ Python Language server and =lsp-python-ms= have been archived and are now replac
     (setq highlight-indent-guides-method 'column))
 #+end_src
 
-#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+**** Pyvenv (Optional)
+It looks like all the functionality provided by pyvenv can be found in =conda.el= with easier usage.
+
+#+begin_src emacs-lisp 
   (use-package pyvenv
     :init (setenv "WORKON_HOME" "/opt/homebrew/Caskroom/miniforge/base/envs")
     :config
@@ -623,6 +634,15 @@ Python Language server and =lsp-python-ms= have been archived and are now replac
                (local-set-key (kbd "<C-return>") 'eir-eval-in-python))))
 #+end_src
 
+**** Conda.el
+Use [[https://github.com/necaris/conda.el][=conda.el=]] to manage virtual environment and add conda support in =eshell= (check out this [[https://emacs.stackexchange.com/questions/61196/how-can-i-run-conda-in-emacs-shell][issue]]).
+
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package conda
+    ;; :init (;(conda-env-initialize-interactive-shells)
+    ;;        (conda-env-initialize-eshell))
+    :custom ((conda-anaconda-home "/opt/homebrew/Caskroom/miniforge/base/")))
+#+end_src
 *** EIN
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (use-package ein
@@ -635,11 +655,6 @@ Python Language server and =lsp-python-ms= have been archived and are now replac
     )
   (use-package markdown-mode)
 #+end_src
-
-
-
-
-
 
 
 ** AucTex
