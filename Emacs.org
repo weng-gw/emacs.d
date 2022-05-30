@@ -372,30 +372,32 @@ We can further use the following config to allow us move between windown with =s
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'wgw/org-babel-tangle-config)))
 #+end_src
 
-* Development
+* Development Tools
 ** Language Server
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-  (defun wgw/lsp-mode-setup ()
-    (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-    (lsp-headerline-breadcrumb-mode))
+      (defun wgw/lsp-mode-setup ()
+        (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+        (lsp-headerline-breadcrumb-mode))
 
-  (use-package lsp-mode
-    :commands (lsp lsp-deferred)
-    :hook (lsp-mode . wgw/lsp-mode-setup)
-    :init
-    (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
-    :config
-    (lsp-enable-which-key-integration t))
+      (use-package lsp-mode
+        :commands (lsp lsp-deferred)
+        :hook (lsp-mode . wgw/lsp-mode-setup)
+        :init
+        (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+        :config 
+        (lsp-enable-which-key-integration t)
+        :custom
+        (lsp-enable-file-watchers nil))
 
-  (use-package lsp-ui
-    :hook (lsp-mode . lsp-ui-mode)
-    :custom
-    (lsp-ui-doc-position 'bottom))
+      (use-package lsp-ui
+        :hook (lsp-mode . lsp-ui-mode)
+        :custom
+        (lsp-ui-doc-position 'bottom))
 
-  (use-package lsp-treemacs
-    :after lsp)
+      (use-package lsp-treemacs
+        :after lsp)
 
-  (use-package lsp-ivy)
+      (use-package lsp-ivy)
 #+end_src
 
 ** Company Mode
@@ -454,6 +456,54 @@ Then we set =aspell= to be used by =ispell=.
 (setq-default ispell-program-name "aspell")
 #+end_src
 
+** Yas-snippet
+
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package yasnippet
+    :config (yas-reload-all)
+    (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+    (add-hook 'python-mode-hook 'yas-minor-mode)
+    (add-hook 'ess-mode-hook 'yas-minor-mode)
+    (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
+    (add-hook 'org-mode-hook 'yas-minor-mode)
+    (add-hook 'markdown-mode-hook 'yas-minor-mode)
+    (add-hook 'scala-mode-hook 'yas-minor-mode)
+    (add-hook 'lisp-mode-hook 'yas-minor-mode))
+  ;; note the snippets bundle needs to be installed separately
+  ;; use M-x package-list-packages to list all packages available and install yasnippet-snippets or yasnippet-classic-snippets`
+#+end_src
+
+** Eshell
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (defun wgw/configure-eshell ()
+  ;; Save command history when commands are entered
+  (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+
+  ;; Truncate buffer for performance
+  (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+
+  ;; Bind some useful keys for evil-mode
+  ;; (evil-define-key '(normal insert visual) eshell-mode-map (kbd "C-r") 'counsel-esh-history)
+  ;; (evil-define-key '(normal insert visual) eshell-mode-map (kbd "<home>") 'eshell-bol)
+  ;; (evil-normalize-keymaps)
+
+  (setq eshell-history-size         10000
+        eshell-buffer-maximum-lines 10000
+        eshell-hist-ignoredups t
+        eshell-scroll-to-bottom-on-input t))
+
+  (use-package eshell-git-prompt)
+
+  (use-package eshell
+  :hook (eshell-first-time-mode . wgw/configure-eshell)
+  :config
+  (with-eval-after-load 'esh-opt
+    (setq eshell-destroy-buffer-when-process-dies t)
+    (setq eshell-visual-commands '("htop" "zsh" "vim")))  
+  (eshell-git-prompt-use-theme 'robbyrussell))
+
+#+end_src
+* Programming Languages
 ** R
 
 Besides =ESS=, we also add language server for =R= for richer IDE functionality. See [[https://github.com/REditorSupport/languageserver]].
@@ -478,46 +528,6 @@ Besides =ESS=, we also add language server for =R= for richer IDE functionality.
     )  
 #+end_src
 
-** AucTex
-#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-(use-package auctex
-  :hook  (LaTeX-mode . flyspell-mode)
-  :init
-  (add-hook 'LaTeX-mode-hook 'auto-fill-mode)
-  (setq TeX-PDF-mode t)
-  (setq TeX-view-program-selection '((output-pdf "Skim")))
-  (setq TeX-view-program-list
-	'(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
-  (add-hook 'LaTeX-mode-hook
-	    (lambda()
-	      (latex-math-mode 1)
-	      (add-to-list
-	       'TeX-command-list' ("XeLaTeX" "%`xelatex -synctex=1%(mode)%' %t" TeX-run-TeX nil t))
-	      (setq TeX-command-default "XeLaTeX")
-	      (setq TeX-show-compilation nil)))
-  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-  (setq TeX-source-correlate-method 'synctex)
-  (setq TeX-source-correlate-mode t)
-  (setq TeX-source-correlate-start-server t)
-  )
-#+End_src
-
-** Yas-snippet
-#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-  (use-package yasnippet
-    :config (yas-reload-all)
-    (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
-    (add-hook 'python-mode-hook 'yas-minor-mode)
-    (add-hook 'ess-mode-hook 'yas-minor-mode)
-    (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
-    (add-hook 'org-mode-hook 'yas-minor-mode)
-    (add-hook 'markdown-mode-hook 'yas-minor-mode)
-    (add-hook 'scala-mode-hook 'yas-minor-mode)
-    (add-hook 'lisp-mode-hook 'yas-minor-mode))
-  ;; note the snippets bundle needs to be installed separately
-  ;; use M-x package-list-packages to list all packages available and install yasnippet-snippets or yasnippet-classic-snippets`
-#+end_src
 
 ** Python
 *** Python script
@@ -590,3 +600,31 @@ Python Language server and =lsp-python-ms= have been archived and are now replac
 
 
 
+
+
+
+** AucTex
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(use-package auctex
+  :hook  (LaTeX-mode . flyspell-mode)
+  :init
+  (add-hook 'LaTeX-mode-hook 'auto-fill-mode)
+  (setq TeX-PDF-mode t)
+  (setq TeX-view-program-selection '((output-pdf "Skim")))
+  (setq TeX-view-program-list
+	'(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+  (add-hook 'LaTeX-mode-hook
+	    (lambda()
+	      (latex-math-mode 1)
+	      (add-to-list
+	       'TeX-command-list' ("XeLaTeX" "%`xelatex -synctex=1%(mode)%' %t" TeX-run-TeX nil t))
+	      (setq TeX-command-default "XeLaTeX")
+	      (setq TeX-show-compilation nil)))
+  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (setq TeX-source-correlate-method 'synctex)
+  (setq TeX-source-correlate-mode t)
+  (setq TeX-source-correlate-start-server t)
+  )
+#+End_src
+ 
