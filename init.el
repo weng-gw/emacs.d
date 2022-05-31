@@ -5,7 +5,7 @@
 ;; Add exec-path-from-shell to ensure Emacs started from Mac App (homebrew Cask)
 ;; can still inherit shell vars
 (use-package exec-path-from-shell
-:config (exec-path-from-shell-initialize))
+  :config (exec-path-from-shell-initialize))
 
 ;; Initialize package sources
 (require 'package)

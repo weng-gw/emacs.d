@@ -13,7 +13,7 @@
   ;; Add exec-path-from-shell to ensure Emacs started from Mac App (homebrew Cask)
   ;; can still inherit shell vars
   (use-package exec-path-from-shell
-  :config (exec-path-from-shell-initialize))
+    :config (exec-path-from-shell-initialize))
 #+end_src
 
 * Package System Setup
@@ -652,7 +652,8 @@ It looks like all the functionality provided by pyvenv can be found in =conda.el
 #+end_src
 
 **** Conda.el
-Use [[https://github.com/necaris/conda.el][=conda.el=]] to manage virtual environment and add conda support in =eshell= (check out this [[https://emacs.stackexchange.com/questions/61196/how-can-i-run-conda-in-emacs-shell][issue]]).
+Use [[https://github.com/necaris/conda.el][=conda.el=]] to manage virtual environment.
+=conda=  is still not supported in =eshell= (check out this [[https://emacs.stackexchange.com/questions/61196/how-can-i-run-conda-in-emacs-shell][issue]], but it works in =shell=).
 
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (use-package conda
