@@ -199,10 +199,26 @@ We can further use the following config to allow us move between windown with =s
 
 ** Dashboard
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-(use-package dashboard
-  :ensure t
-  :config
-  (dashboard-setup-startup-hook))
+  
+  (use-package dashboard
+    :ensure t
+    :init (setq dashboard-items '((recents  . 5)
+                      (bookmarks . 5)
+                      (projects . 5)
+                      (agenda . 5)))
+    :custom ((dashboard-projects-backend  'projectile)
+             (dashboard-center-content t)
+             (dashboard-set-heading-icons t)
+             (dashboard-set-file-icons t))
+    :config
+    (dashboard-setup-startup-hook))
+#+end_src
+
+** Page break lines (Optional)
+#+begin_src emacs-lisp
+(use-package page-break-lines
+    :ensure t
+    :config (add-to-list 'page-break-lines-modes 'dashboard-mode))
 #+end_src
 
 * Keybinding Configuration
@@ -490,7 +506,8 @@ Then we set =aspell= to be used by =ispell=.
     (add-hook 'scala-mode-hook 'yas-minor-mode)
     (add-hook 'lisp-mode-hook 'yas-minor-mode))
   ;; note the snippets bundle needs to be installed separately
-  ;; use M-x package-list-packages to list all packages available and install yasnippet-snippets or yasnippet-classic-snippets`
+  ;; use M-x package-list-packages to list all packages available and install
+  ;; yasnippet-snippets or yasnippet-classic-snippets`
 #+end_src
 
 ** Eshell
@@ -642,6 +659,11 @@ Use [[https://github.com/necaris/conda.el][=conda.el=]] to manage virtual enviro
     ;; :init (;(conda-env-initialize-interactive-shells)
     ;;        (conda-env-initialize-eshell))
     :custom ((conda-anaconda-home "/opt/homebrew/Caskroom/miniforge/base/")))
+#+end_src
+
+**** Jupyter Mode
+#+begin_src emacs-lisp 
+(use-package jupyter)
 #+end_src
 *** EIN
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes

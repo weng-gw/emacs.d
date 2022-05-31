@@ -133,6 +133,14 @@
 
 (use-package dashboard
   :ensure t
+  :init (setq dashboard-items '((recents  . 5)
+                    (bookmarks . 5)
+                    (projects . 5)
+                    (agenda . 5)))
+  :custom ((dashboard-projects-backend  'projectile)
+           (dashboard-center-content t)
+           (dashboard-set-heading-icons t)
+           (dashboard-set-file-icons t))
   :config
   (dashboard-setup-startup-hook))
 
@@ -324,7 +332,8 @@ _~_: modified
   (add-hook 'scala-mode-hook 'yas-minor-mode)
   (add-hook 'lisp-mode-hook 'yas-minor-mode))
 ;; note the snippets bundle needs to be installed separately
-;; use M-x package-list-packages to list all packages available and install yasnippet-snippets or yasnippet-classic-snippets`
+;; use M-x package-list-packages to list all packages available and install
+;; yasnippet-snippets or yasnippet-classic-snippets`
 
 (defun wgw/configure-eshell ()
 ;; Save command history when commands are entered
