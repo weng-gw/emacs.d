@@ -137,7 +137,7 @@
   (dashboard-setup-startup-hook))
 
 ;; Make ESC quit prompts
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+;;(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 (use-package hydra)
 (defhydra hydra-buffer-menu (:color pink
@@ -379,3 +379,16 @@ _~_: modified
   (require 'ein-subpackages)
   )
 (use-package markdown-mode)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(yasnippet-classic-snippets window-numbering which-key visual-fill-column use-package smart-mode-line scala-mode rainbow-delimiters python-mode poly-R org-bullets neotree miniedit lsp-ui lsp-treemacs lsp-pyright lsp-ivy jedi ivy-rich htmlize highlight-indent-guides helpful hc-zenburn-theme exec-path-from-shell eval-in-repl ess elpy ein doom-themes doom-modeline discover-my-major dashboard counsel-projectile company-jedi company-box company-anaconda command-log-mode centaur-tabs auto-package-update auto-compile auctex all-the-icons)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
