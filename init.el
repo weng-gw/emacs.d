@@ -5,7 +5,7 @@
 ;; Add exec-path-from-shell to ensure Emacs started from Mac App (homebrew Cask)
 ;; can still inherit shell vars
 (use-package exec-path-from-shell
-:config (exec-path-from-shell-initialize))
+  :config (exec-path-from-shell-initialize))
 
 ;; Initialize package sources
 (require 'package)
@@ -133,6 +133,14 @@
 
 (use-package dashboard
   :ensure t
+  :init (setq dashboard-items '((recents  . 5)
+                    (bookmarks . 5)
+                    (projects . 5)
+                    (agenda . 5)))
+  :custom ((dashboard-projects-backend  'projectile)
+           (dashboard-center-content t)
+           (dashboard-set-heading-icons t)
+           (dashboard-set-file-icons t))
   :config
   (dashboard-setup-startup-hook))
 
@@ -235,6 +243,22 @@ _~_: modified
       (org-babel-tangle))))
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'wgw/org-babel-tangle-config)))
 
+(use-package dired
+  :ensure nil
+  :commands (dired dired-jump)
+  :bind (("C-x C-j" . dired-jump))
+  ;;:custom ((dired-listing-switches "-agho --group-directories-first"))
+  ;; :config
+  ;; (evil-collection-define-key 'normal 'dired-mode-map
+  ;;   "h" 'dired-single-up-directory
+  ;;   "l" 'dired-single-buffer)
+  )
+
+(use-package dired-single)
+
+(use-package all-the-icons-dired
+:hook (dired-mode . all-the-icons-dired-mode))
+
 (defun wgw/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
   (lsp-headerline-breadcrumb-mode))
@@ -244,8 +268,10 @@ _~_: modified
   :hook (lsp-mode . wgw/lsp-mode-setup)
   :init
   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
-  :config
-  (lsp-enable-which-key-integration t))
+  :config 
+  (lsp-enable-which-key-integration t)
+  :custom
+  (lsp-enable-file-watchers nil))
 
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
@@ -295,6 +321,47 @@ _~_: modified
 
 (setq-default ispell-program-name "aspell")
 
+(use-package yasnippet
+  :config (yas-reload-all)
+  (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+  (add-hook 'python-mode-hook 'yas-minor-mode)
+  (add-hook 'ess-mode-hook 'yas-minor-mode)
+  (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
+  (add-hook 'org-mode-hook 'yas-minor-mode)
+  (add-hook 'markdown-mode-hook 'yas-minor-mode)
+  (add-hook 'scala-mode-hook 'yas-minor-mode)
+  (add-hook 'lisp-mode-hook 'yas-minor-mode))
+;; note the snippets bundle needs to be installed separately
+;; use M-x package-list-packages to list all packages available and install
+;; yasnippet-snippets or yasnippet-classic-snippets`
+
+(defun wgw/configure-eshell ()
+;; Save command history when commands are entered
+(add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+
+;; Truncate buffer for performance
+(add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+
+;; Bind some useful keys for evil-mode
+;; (evil-define-key '(normal insert visual) eshell-mode-map (kbd "C-r") 'counsel-esh-history)
+;; (evil-define-key '(normal insert visual) eshell-mode-map (kbd "<home>") 'eshell-bol)
+;; (evil-normalize-keymaps)
+
+(setq eshell-history-size         10000
+      eshell-buffer-maximum-lines 10000
+      eshell-hist-ignoredups t
+      eshell-scroll-to-bottom-on-input t))
+
+(use-package eshell-git-prompt)
+
+(use-package eshell
+:hook (eshell-first-time-mode . wgw/configure-eshell)
+:config
+(with-eval-after-load 'esh-opt
+  (setq eshell-destroy-buffer-when-process-dies t)
+  (setq eshell-visual-commands '("htop" "zsh" "vim")))  
+(eshell-git-prompt-use-theme 'robbyrussell))
+
 (use-package ess
   :defer t
   :bind ("C-c C-s" . ess-switch-process)
@@ -312,6 +379,56 @@ _~_: modified
 (use-package poly-R
   :defer t
   )
+
+(use-package lsp-pyright
+  :ensure t
+  :hook (python-mode . (lambda ()                      
+    (require 'lsp-pyright)
+                          (lsp))))  ; or lsp-deferred
+
+(use-package python-mode
+  :ensure t
+  ;:hook (python-mode . lsp)
+  :custom
+  ;; NOTE: Set these if Python 3 is called "python3" on your system!
+  ((python-shell-interpreter "ipython")
+   (python-shell-interpreter-args "-i --simple-prompt")     
+   )
+  :config (add-to-list 'python-shell-completion-native-disabled-interpreters
+           "ipython")
+  ;; (dap-python-executable "python3")
+  ;(dap-python-debugger 'debugpy)
+  ;:config
+  ;(require 'dap-python)
+  )
+
+(use-package highlight-indent-guides
+  :config
+  (add-hook 'python-mode-hook 'highlight-indent-guides-mode)
+  (setq highlight-indent-guides-method 'column))
+
+(use-package eval-in-repl
+  :config
+  (setq eir-repl-placement 'right)
+  (require 'eval-in-repl-python)
+  (add-hook 'python-mode-hook
+          '(lambda ()
+             (local-set-key (kbd "<C-return>") 'eir-eval-in-python))))
+
+(use-package conda
+  ;; :init (;(conda-env-initialize-interactive-shells)
+  ;;        (conda-env-initialize-eshell))
+  :custom ((conda-anaconda-home "/opt/homebrew/Caskroom/miniforge/base/")))
+
+(use-package ein
+  :defer t
+  :config (require 'ein)
+  (setq ein:completion-backend 'ein:use-company-jedi-backend)
+  (require 'ein-loaddefs)
+  (require 'ein-notebook)
+  (require 'ein-subpackages)
+  )
+(use-package markdown-mode)
 
 (use-package auctex
   :hook  (LaTeX-mode . flyspell-mode)
@@ -335,57 +452,13 @@ _~_: modified
   (setq TeX-source-correlate-start-server t)
   )
 
-(use-package yasnippet
-  :config (yas-reload-all)
-  (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
-  (add-hook 'python-mode-hook 'yas-minor-mode)
-  (add-hook 'ess-mode-hook 'yas-minor-mode)
-  (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
-  (add-hook 'org-mode-hook 'yas-minor-mode)
-  (add-hook 'markdown-mode-hook 'yas-minor-mode)
-  (add-hook 'scala-mode-hook 'yas-minor-mode)
-  (add-hook 'lisp-mode-hook 'yas-minor-mode))
-;; note the snippets bundle needs to be installed separately
-;; use M-x package-list-packages to list all packages available and install yasnippet-snippets or yasnippet-classic-snippets`
-
-(use-package lsp-pyright
-  :ensure t
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-pyright)
-                          (lsp))))  ; or lsp-deferred
-
-(use-package python-mode
-  :ensure t
-  ;:hook (python-mode . lsp)
-  ;:custom
-  ;; NOTE: Set these if Python 3 is called "python3" on your system!
-  ;;(python-shell-interpreter "ipython")
-  ;; (dap-python-executable "python3")
-  ;(dap-python-debugger 'debugpy)
-  ;:config
-  ;(require 'dap-python)
-  )
-
-(use-package pyvenv
-  :config
-  (add-hook 'python-mode-hook 'pyvenv-mode ))
-
-(use-package ein
-  :defer t
-  :config (require 'ein)
-  (setq ein:completion-backend 'ein:use-company-jedi-backend)
-  (require 'ein-loaddefs)
-  (require 'ein-notebook)
-  (require 'ein-subpackages)
-  )
-(use-package markdown-mode)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(yasnippet-classic-snippets window-numbering which-key visual-fill-column use-package smart-mode-line scala-mode rainbow-delimiters python-mode poly-R org-bullets neotree miniedit lsp-ui lsp-treemacs lsp-pyright lsp-ivy jedi ivy-rich htmlize highlight-indent-guides helpful hc-zenburn-theme exec-path-from-shell eval-in-repl ess elpy ein doom-themes doom-modeline discover-my-major dashboard counsel-projectile company-jedi company-box company-anaconda command-log-mode centaur-tabs auto-package-update auto-compile auctex all-the-icons)))
+   '(conda yasnippet window-numbering which-key visual-fill-column use-package rainbow-delimiters pyvenv pythonic python-mode poly-R org-bullets magit lsp-ui lsp-treemacs lsp-pyright lsp-ivy ivy-rich highlight-indent-guides helpful exec-path-from-shell eval-in-repl ess eshell-git-prompt ein doom-themes doom-modeline discover-my-major dired-single dashboard counsel-projectile company-box auto-package-update auctex all-the-icons-dired)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

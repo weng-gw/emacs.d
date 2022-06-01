@@ -3,7 +3,7 @@
 * Introduction
 
 * Tips for Use
-
+ 
 * Basic Config
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (setq user-full-name "Guangwei Weng"
@@ -13,7 +13,7 @@
   ;; Add exec-path-from-shell to ensure Emacs started from Mac App (homebrew Cask)
   ;; can still inherit shell vars
   (use-package exec-path-from-shell
-  :config (exec-path-from-shell-initialize))
+    :config (exec-path-from-shell-initialize))
 #+end_src
 
 * Package System Setup
@@ -118,7 +118,7 @@
     :custom ((doom-modeline-height 15)))
 #+end_src
 
-** Delimeters
+** Delimiters
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (use-package rainbow-delimiters
     :hook (prog-mode . rainbow-delimiters-mode))
@@ -199,10 +199,26 @@ We can further use the following config to allow us move between windown with =s
 
 ** Dashboard
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-(use-package dashboard
-  :ensure t
-  :config
-  (dashboard-setup-startup-hook))
+  
+  (use-package dashboard
+    :ensure t
+    :init (setq dashboard-items '((recents  . 5)
+                      (bookmarks . 5)
+                      (projects . 5)
+                      (agenda . 5)))
+    :custom ((dashboard-projects-backend  'projectile)
+             (dashboard-center-content t)
+             (dashboard-set-heading-icons t)
+             (dashboard-set-file-icons t))
+    :config
+    (dashboard-setup-startup-hook))
+#+end_src
+
+** Page break lines (Optional)
+#+begin_src emacs-lisp
+(use-package page-break-lines
+    :ensure t
+    :config (add-to-list 'page-break-lines-modes 'dashboard-mode))
 #+end_src
 
 * Keybinding Configuration
@@ -372,30 +388,52 @@ We can further use the following config to allow us move between windown with =s
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'wgw/org-babel-tangle-config)))
 #+end_src
 
-* Development
+* File Management
+
+** Dired
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package dired
+    :ensure nil
+    :commands (dired dired-jump)
+    :bind (("C-x C-j" . dired-jump))
+    ;;:custom ((dired-listing-switches "-agho --group-directories-first"))
+    ;; :config
+    ;; (evil-collection-define-key 'normal 'dired-mode-map
+    ;;   "h" 'dired-single-up-directory
+    ;;   "l" 'dired-single-buffer)
+    )
+
+  (use-package dired-single)
+
+  (use-package all-the-icons-dired
+  :hook (dired-mode . all-the-icons-dired-mode))
+#+end_src
+* Development Tools
 ** Language Server
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-  (defun wgw/lsp-mode-setup ()
-    (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-    (lsp-headerline-breadcrumb-mode))
+      (defun wgw/lsp-mode-setup ()
+        (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+        (lsp-headerline-breadcrumb-mode))
 
-  (use-package lsp-mode
-    :commands (lsp lsp-deferred)
-    :hook (lsp-mode . wgw/lsp-mode-setup)
-    :init
-    (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
-    :config
-    (lsp-enable-which-key-integration t))
+      (use-package lsp-mode
+        :commands (lsp lsp-deferred)
+        :hook (lsp-mode . wgw/lsp-mode-setup)
+        :init
+        (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+        :config 
+        (lsp-enable-which-key-integration t)
+        :custom
+        (lsp-enable-file-watchers nil))
 
-  (use-package lsp-ui
-    :hook (lsp-mode . lsp-ui-mode)
-    :custom
-    (lsp-ui-doc-position 'bottom))
+      (use-package lsp-ui
+        :hook (lsp-mode . lsp-ui-mode)
+        :custom
+        (lsp-ui-doc-position 'bottom))
 
-  (use-package lsp-treemacs
-    :after lsp)
+      (use-package lsp-treemacs
+        :after lsp)
 
-  (use-package lsp-ivy)
+      (use-package lsp-ivy)
 #+end_src
 
 ** Company Mode
@@ -454,6 +492,55 @@ Then we set =aspell= to be used by =ispell=.
 (setq-default ispell-program-name "aspell")
 #+end_src
 
+** Yas-snippet
+
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package yasnippet
+    :config (yas-reload-all)
+    (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+    (add-hook 'python-mode-hook 'yas-minor-mode)
+    (add-hook 'ess-mode-hook 'yas-minor-mode)
+    (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
+    (add-hook 'org-mode-hook 'yas-minor-mode)
+    (add-hook 'markdown-mode-hook 'yas-minor-mode)
+    (add-hook 'scala-mode-hook 'yas-minor-mode)
+    (add-hook 'lisp-mode-hook 'yas-minor-mode))
+  ;; note the snippets bundle needs to be installed separately
+  ;; use M-x package-list-packages to list all packages available and install
+  ;; yasnippet-snippets or yasnippet-classic-snippets`
+#+end_src
+
+** Eshell
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (defun wgw/configure-eshell ()
+  ;; Save command history when commands are entered
+  (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+
+  ;; Truncate buffer for performance
+  (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+
+  ;; Bind some useful keys for evil-mode
+  ;; (evil-define-key '(normal insert visual) eshell-mode-map (kbd "C-r") 'counsel-esh-history)
+  ;; (evil-define-key '(normal insert visual) eshell-mode-map (kbd "<home>") 'eshell-bol)
+  ;; (evil-normalize-keymaps)
+
+  (setq eshell-history-size         10000
+        eshell-buffer-maximum-lines 10000
+        eshell-hist-ignoredups t
+        eshell-scroll-to-bottom-on-input t))
+
+  (use-package eshell-git-prompt)
+
+  (use-package eshell
+  :hook (eshell-first-time-mode . wgw/configure-eshell)
+  :config
+  (with-eval-after-load 'esh-opt
+    (setq eshell-destroy-buffer-when-process-dies t)
+    (setq eshell-visual-commands '("htop" "zsh" "vim")))  
+  (eshell-git-prompt-use-theme 'robbyrussell))
+  
+#+end_src
+* Programming Languages
 ** R
 
 Besides =ESS=, we also add language server for =R= for richer IDE functionality. See [[https://github.com/REditorSupport/languageserver]].
@@ -477,6 +564,121 @@ Besides =ESS=, we also add language server for =R= for richer IDE functionality.
     :defer t
     )  
 #+end_src
+
+
+** Python
+*** Python script
+**** Microsoft Python Language Server (Deprecated)
+Make sure we install the python language server first
+#+begin_src shell
+  pip install --user "python-lsp-server[all]"
+  pip install --user "python-language-server[all]" 
+  ## python-language-server is not maintained
+#+end_src
+
+#+begin_src emacs-lisp 
+  (use-package lsp-python-ms
+    :ensure t
+    :hook (python-mode . (lambda ()
+                           (require 'lsp-python-ms)
+                           (lsp)))
+    :init
+    ;(setq lsp-python-ms-executable (executable-find "python-language-server"))
+    (setq lsp-python-ms-auto-install-server t)
+    )
+#+end_src
+
+Python Language server and =lsp-python-ms= have been archived and are now replaced by =pyright= ([[https://github.com/emacs-lsp/lsp-python-ms/]]).
+
+**** Pyright
+#+begin_src shell
+  pip install pyright
+#+end_src
+
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(use-package lsp-pyright
+  :ensure t
+  :hook (python-mode . (lambda ()                      
+    (require 'lsp-pyright)
+                          (lsp))))  ; or lsp-deferred
+#+end_src
+
+**** Python Mode
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package python-mode
+    :ensure t
+    ;:hook (python-mode . lsp)
+    :custom
+    ;; NOTE: Set these if Python 3 is called "python3" on your system!
+    ((python-shell-interpreter "ipython")
+     (python-shell-interpreter-args "-i --simple-prompt")     
+     )
+    :config (add-to-list 'python-shell-completion-native-disabled-interpreters
+             "ipython")
+    ;; (dap-python-executable "python3")
+    ;(dap-python-debugger 'debugpy)
+    ;:config
+    ;(require 'dap-python)
+    )
+#+end_src
+
+**** Highlight indentation
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package highlight-indent-guides
+    :config
+    (add-hook 'python-mode-hook 'highlight-indent-guides-mode)
+    (setq highlight-indent-guides-method 'column))
+#+end_src
+
+**** Pyvenv (Optional)
+It looks like all the functionality provided by pyvenv can be found in =conda.el= with easier usage.
+
+#+begin_src emacs-lisp 
+  (use-package pyvenv
+    :init (setenv "WORKON_HOME" "/opt/homebrew/Caskroom/miniforge/base/envs")
+    :config
+    (add-hook 'python-mode-hook 'pyvenv-mode ))  
+#+end_src
+
+**** Eval in Repl
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package eval-in-repl
+    :config
+    (setq eir-repl-placement 'right)
+    (require 'eval-in-repl-python)
+    (add-hook 'python-mode-hook
+            '(lambda ()
+               (local-set-key (kbd "<C-return>") 'eir-eval-in-python))))
+#+end_src
+
+**** Conda.el
+Use [[https://github.com/necaris/conda.el][=conda.el=]] to manage virtual environment.
+=conda=  is still not supported in =eshell= (check out this [[https://emacs.stackexchange.com/questions/61196/how-can-i-run-conda-in-emacs-shell][issue]], but it works in =shell=).
+
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package conda
+    ;; :init (;(conda-env-initialize-interactive-shells)
+    ;;        (conda-env-initialize-eshell))
+    :custom ((conda-anaconda-home "/opt/homebrew/Caskroom/miniforge/base/")))
+#+end_src
+
+**** Jupyter Mode
+#+begin_src emacs-lisp 
+(use-package jupyter)
+#+end_src
+*** EIN
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package ein
+    :defer t
+    :config (require 'ein)
+    (setq ein:completion-backend 'ein:use-company-jedi-backend)
+    (require 'ein-loaddefs)
+    (require 'ein-notebook)
+    (require 'ein-subpackages)
+    )
+  (use-package markdown-mode)
+#+end_src
+
 
 ** AucTex
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
@@ -502,91 +704,4 @@ Besides =ESS=, we also add language server for =R= for richer IDE functionality.
   (setq TeX-source-correlate-start-server t)
   )
 #+End_src
-
-** Yas-snippet
-#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-  (use-package yasnippet
-    :config (yas-reload-all)
-    (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
-    (add-hook 'python-mode-hook 'yas-minor-mode)
-    (add-hook 'ess-mode-hook 'yas-minor-mode)
-    (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
-    (add-hook 'org-mode-hook 'yas-minor-mode)
-    (add-hook 'markdown-mode-hook 'yas-minor-mode)
-    (add-hook 'scala-mode-hook 'yas-minor-mode)
-    (add-hook 'lisp-mode-hook 'yas-minor-mode))
-  ;; note the snippets bundle needs to be installed separately
-  ;; use M-x package-list-packages to list all packages available and install yasnippet-snippets or yasnippet-classic-snippets`
-#+end_src
-
-** Python
-*** Python script
-Make sure we install the python language server first
-#+begin_src shell
-  pip install --user "python-lsp-server[all]"
-  pip install --user "python-language-server[all]" 
-  ## python-language-server is not maintained
-#+end_src
-
-#+begin_src emacs-lisp 
-  (use-package lsp-python-ms
-    :ensure t
-    :hook (python-mode . (lambda ()
-                           (require 'lsp-python-ms)
-                           (lsp)))
-    :init
-    ;(setq lsp-python-ms-executable (executable-find "python-language-server"))
-    (setq lsp-python-ms-auto-install-server t)
-    )
-#+end_src
-
-Python Language server and =lsp-python-ms= have been archived and are now replaced by =pyright= ([[https://github.com/emacs-lsp/lsp-python-ms/]]).
-
-#+begin_src shell
-  pip install pyright
-#+end_src
-
-#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-(use-package lsp-pyright
-  :ensure t
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-pyright)
-                          (lsp))))  ; or lsp-deferred
-#+end_src
-
-#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-  (use-package python-mode
-    :ensure t
-    ;:hook (python-mode . lsp)
-    ;:custom
-    ;; NOTE: Set these if Python 3 is called "python3" on your system!
-    ;;(python-shell-interpreter "ipython")
-    ;; (dap-python-executable "python3")
-    ;(dap-python-debugger 'debugpy)
-    ;:config
-    ;(require 'dap-python)
-    )
-#+end_src
-
-#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-  (use-package pyvenv
-    :config
-    (add-hook 'python-mode-hook 'pyvenv-mode ))
-#+end_src
-
-*** EIN
-#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-  (use-package ein
-    :defer t
-    :config (require 'ein)
-    (setq ein:completion-backend 'ein:use-company-jedi-backend)
-    (require 'ein-loaddefs)
-    (require 'ein-notebook)
-    (require 'ein-subpackages)
-    )
-  (use-package markdown-mode)
-#+end_src
-
-
-
-
+ 
