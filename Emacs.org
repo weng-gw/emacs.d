@@ -100,7 +100,8 @@
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   ;; Use the default theme in VSCode
   (use-package doom-themes
-    :init (load-theme 'doom-dark+ t))
+    :init ;;(load-theme 'doom-dark+ t)
+    (load-theme 'doom-zenburn t))
 #+end_src
 
 ** Better Modeline
@@ -388,6 +389,10 @@ We can further use the following config to allow us move between windown with =s
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'wgw/org-babel-tangle-config)))
 #+end_src
 
+** Htmlize for better html rendering
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(use-package htmlize)
+#+end_src
 * File Management
 
 ** Dired

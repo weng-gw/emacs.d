@@ -65,7 +65,8 @@
 
 ;; Use the default theme in VSCode
 (use-package doom-themes
-  :init (load-theme 'doom-dark+ t))
+  :init ;;(load-theme 'doom-dark+ t)
+  (load-theme 'doom-zenburn t))
 
 ;; NOTE: The first time you load your configuration on a new machine, you'll
 ;; need to run the following command interactively so that mode line icons
@@ -145,7 +146,7 @@
   (dashboard-setup-startup-hook))
 
 ;; Make ESC quit prompts
-;;(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 (use-package hydra)
 (defhydra hydra-buffer-menu (:color pink
@@ -242,6 +243,8 @@ _~_: modified
     (let ((org-confirm-babel-evaluate nil))
       (org-babel-tangle))))
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'wgw/org-babel-tangle-config)))
+
+(use-package htmlize)
 
 (use-package dired
   :ensure nil
@@ -451,14 +454,13 @@ _~_: modified
   (setq TeX-source-correlate-mode t)
   (setq TeX-source-correlate-start-server t)
   )
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(conda yasnippet window-numbering which-key visual-fill-column use-package rainbow-delimiters pyvenv pythonic python-mode poly-R org-bullets magit lsp-ui lsp-treemacs lsp-pyright lsp-ivy ivy-rich highlight-indent-guides helpful exec-path-from-shell eval-in-repl ess eshell-git-prompt ein doom-themes doom-modeline discover-my-major dired-single dashboard counsel-projectile company-box auto-package-update auctex all-the-icons-dired)))
+   '(htmlize yasnippet window-numbering which-key visual-fill-column use-package rainbow-delimiters pyvenv python-mode poly-R org-bullets magit lsp-ui lsp-treemacs lsp-pyright lsp-ivy ivy-rich highlight-indent-guides helpful exec-path-from-shell eval-in-repl ess eshell-git-prompt ein doom-themes doom-modeline discover-my-major dired-single dashboard counsel-projectile conda company-box auto-package-update auctex all-the-icons-dired)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
