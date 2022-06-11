@@ -1,12 +1,3 @@
-(setq user-full-name "Guangwei Weng"
-      user-mail-address "wengx076@umn.edu")
-(server-start)
-
-;; Add exec-path-from-shell to ensure Emacs started from Mac App (homebrew Cask)
-;; can still inherit shell vars
-(use-package exec-path-from-shell
-  :config (exec-path-from-shell-initialize))
-
 ;; Initialize package sources
 (require 'package)
 
@@ -34,6 +25,26 @@
   (auto-package-update-hide-results t)
   :config
   (auto-package-update-maybe))
+
+(setq user-full-name "Guangwei Weng"
+      user-mail-address "wengx076@umn.edu")
+(server-start)
+
+;; Add exec-path-from-shell to ensure Emacs started from Mac App (homebrew Cask)
+;; can still inherit shell vars
+(use-package exec-path-from-shell
+  :config (exec-path-from-shell-initialize))
+
+;; NOTE: If you want to move everything out of the ~/.emacs.d folder
+;; reliably, set `user-emacs-directory` before loading no-littering!
+;(setq user-emacs-directory "~/.cache/emacs")
+
+(use-package no-littering)
+
+;; no-littering doesn't set this by default so we must place
+;; auto save files in the same path as it uses for sessions
+(setq auto-save-file-name-transforms
+      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 
 (setq inhibit-startup-message nil)        ; Remove all startup message
 (scroll-bar-mode -1)        ; Disable visible scrollbar
@@ -65,8 +76,8 @@
 
 ;; Use the default theme in VSCode
 (use-package doom-themes
-  :init ;;(load-theme 'doom-dark+ t)
-  (load-theme 'doom-zenburn t))
+  :init (load-theme 'doom-dark+ t))
+  ;;(load-theme 'doom-zenburn t))
 
 ;; NOTE: The first time you load your configuration on a new machine, you'll
 ;; need to run the following command interactively so that mode line icons
@@ -260,7 +271,7 @@ _~_: modified
 (use-package dired-single)
 
 (use-package all-the-icons-dired
-:hook (dired-mode . all-the-icons-dired-mode))
+  :hook (dired-mode . all-the-icons-dired-mode))
 
 (defun wgw/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
@@ -454,16 +465,3 @@ _~_: modified
   (setq TeX-source-correlate-mode t)
   (setq TeX-source-correlate-start-server t)
   )
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(htmlize yasnippet window-numbering which-key visual-fill-column use-package rainbow-delimiters pyvenv python-mode poly-R org-bullets magit lsp-ui lsp-treemacs lsp-pyright lsp-ivy ivy-rich highlight-indent-guides helpful exec-path-from-shell eval-in-repl ess eshell-git-prompt ein doom-themes doom-modeline discover-my-major dired-single dashboard counsel-projectile conda company-box auto-package-update auctex all-the-icons-dired)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

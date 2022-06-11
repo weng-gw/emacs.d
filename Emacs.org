@@ -3,18 +3,20 @@
 * Introduction
 
 * Tips for Use
- 
-* Basic Config
-#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-  (setq user-full-name "Guangwei Weng"
-        user-mail-address "wengx076@umn.edu")
-  (server-start)
+* Startup Performance
+** Use options in =use-package=
+=use-package= gives you a few different ways to defer package loading:
+- =:hook= -  Package will be loaded the first time one of the hooks is invoked
+- =:bind= - Package will be loaded the first time one of the key bindings is used
+- =:commands= - Package will be loaded when one of the commands are used
+- =:mode= - Package will be loaded the first time a file with a particular extension is opened
+- =:after=  - Load this package after other specific packages are loaded
+- =:defer= - If you don’t use any of the other options, this one will defer loading until after startup
 
-  ;; Add exec-path-from-shell to ensure Emacs started from Mac App (homebrew Cask)
-  ;; can still inherit shell vars
-  (use-package exec-path-from-shell
-    :config (exec-path-from-shell-initialize))
-#+end_src
+
+The strategy is to look at all of your =use-package= expressions and decide whether it really needs to be loaded immediately at startup!
+
+If you want to make sure a package gets loaded at startup despite the use of any of the options above, use =:demand t=.
 
 * Package System Setup
 
@@ -53,8 +55,33 @@
   (auto-package-update-maybe))
 #+end_src
 
-* UI Configuration
+* Basic Config
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (setq user-full-name "Guangwei Weng"
+        user-mail-address "wengx076@umn.edu")
+  (server-start)
 
+  ;; Add exec-path-from-shell to ensure Emacs started from Mac App (homebrew Cask)
+  ;; can still inherit shell vars
+  (use-package exec-path-from-shell
+    :config (exec-path-from-shell-initialize))
+#+end_src
+
+** Keep Folders Clearn
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+;; NOTE: If you want to move everything out of the ~/.emacs.d folder
+;; reliably, set `user-emacs-directory` before loading no-littering!
+;(setq user-emacs-directory "~/.cache/emacs")
+
+(use-package no-littering)
+
+;; no-littering doesn't set this by default so we must place
+;; auto save files in the same path as it uses for sessions
+(setq auto-save-file-name-transforms
+      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+#+end_src
+
+* UI Configuration
 ** Basic UI Configuration
 
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
@@ -100,8 +127,8 @@
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   ;; Use the default theme in VSCode
   (use-package doom-themes
-    :init ;;(load-theme 'doom-dark+ t)
-    (load-theme 'doom-zenburn t))
+    :init (load-theme 'doom-dark+ t))
+    ;;(load-theme 'doom-zenburn t))
 #+end_src
 
 ** Better Modeline
@@ -394,8 +421,8 @@ We can further use the following config to allow us move between windown with =s
 (use-package htmlize)
 #+end_src
 * File Management
-
 ** Dired
+
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (use-package dired
     :ensure nil
@@ -411,8 +438,9 @@ We can further use the following config to allow us move between windown with =s
   (use-package dired-single)
 
   (use-package all-the-icons-dired
-  :hook (dired-mode . all-the-icons-dired-mode))
+    :hook (dired-mode . all-the-icons-dired-mode))
 #+end_src
+
 * Development Tools
 ** Language Server
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
@@ -443,20 +471,21 @@ We can further use the following config to allow us move between windown with =s
 
 ** Company Mode
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-(use-package company
-  :after lsp-mode
-  :hook (lsp-mode . company-mode)
-  :bind (:map company-active-map
-         ("<tab>" . company-complete-selection))
-        (:map lsp-mode-map
-         ("<tab>" . company-indent-or-complete-common))
-  :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.0))
+  (use-package company
+    :after lsp-mode
+    :hook (lsp-mode . company-mode)
+    :bind (:map company-active-map
+           ("<tab>" . company-complete-selection))
+          (:map lsp-mode-map
+           ("<tab>" . company-indent-or-complete-common))
+    :custom
+    (company-minimum-prefix-length 1)
+    (company-idle-delay 0.0))
 
-(use-package company-box
-  :hook (company-mode . company-box-mode))
+  (use-package company-box
+    :hook (company-mode . company-box-mode))
 #+end_src
+
 ** Projectile
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (use-package projectile
@@ -545,6 +574,7 @@ Then we set =aspell= to be used by =ispell=.
   (eshell-git-prompt-use-theme 'robbyrussell))
   
 #+end_src
+
 * Programming Languages
 ** R
 
