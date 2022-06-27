@@ -155,9 +155,11 @@ If you want to make sure a package gets loaded at startup despite the use of any
 ** Which Key
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (use-package which-key
-    :init (which-key-mode)
+    :defer 0
+    ;;:init 
     :diminish which-key-mode
     :config
+    (which-key-mode)
     (setq which-key-idle-delay 3))
 #+end_src
 
@@ -166,30 +168,31 @@ If you want to make sure a package gets loaded at startup despite the use of any
   (use-package ivy
     :diminish
     :bind (("C-s" . swiper)
-	   :map ivy-minibuffer-map
-	   ("TAB" . ivy-alt-done)	
-	   ("C-l" . ivy-alt-done)
-	   ("C-j" . ivy-next-line)
-	   ("C-k" . ivy-previous-line)
-	   :map ivy-switch-buffer-map
-	   ("C-k" . ivy-previous-line)
-	   ("C-l" . ivy-done)
-	   ("C-d" . ivy-switch-buffer-kill)
-	   :map ivy-reverse-i-search-map
-	   ("C-k" . ivy-previous-line)
-	   ("C-d" . ivy-reverse-i-search-kill))
+           :map ivy-minibuffer-map
+           ("TAB" . ivy-alt-done)	
+           ("C-l" . ivy-alt-done)
+           ("C-j" . ivy-next-line)
+           ("C-k" . ivy-previous-line)
+           :map ivy-switch-buffer-map
+           ("C-k" . ivy-previous-line)
+           ("C-l" . ivy-done)
+           ("C-d" . ivy-switch-buffer-kill)
+           :map ivy-reverse-i-search-map
+           ("C-k" . ivy-previous-line)
+           ("C-d" . ivy-reverse-i-search-kill))
     :config (ivy-mode 1))
 
   (use-package ivy-rich
+    :after ivy
     :init
     (ivy-rich-mode 1))
 
   (use-package counsel
     :bind (("M-x" . counsel-M-x)
-	   ("C-x b" . counsel-ibuffer)
-	   ("C-x C-f" . counsel-find-file)
-	   :map minibuffer-local-map
-	   ("C-r" . 'counsel-minibuffer-history)))
+           ("C-x b" . counsel-ibuffer)
+           ("C-x C-f" . counsel-find-file)
+           :map minibuffer-local-map
+           ("C-r" . 'counsel-minibuffer-history)))
 
   (use-package swiper)  
 #+end_src
@@ -197,6 +200,7 @@ If you want to make sure a package gets loaded at startup despite the use of any
 ** Helpful Help Commands
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (use-package helpful
+    :commands (helpful-callable helpful-variable helpful-command helpful-key)
     :custom
     (counsel-describe-function-function #'helpful-callable)
     (counsel-describe-variable-function #'helpful-variable)
@@ -307,38 +311,39 @@ We can further use the following config to allow us move between windown with =s
 
 ** hydra
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-  (use-package hydra)
-  (defhydra hydra-buffer-menu (:color pink
-				      :hint nil)
-     "
-  ^Mark^             ^Unmark^           ^Actions^          ^Search
-  ^^^^^^^^-----------------------------------------------------------------
-  _m_: mark          _u_: unmark        _x_: execute       _R_: re-isearch
-  _s_: save          _U_: unmark up     _b_: bury          _I_: isearch
-  _d_: delete        ^ ^                _g_: refresh       _O_: multi-occur
-  _D_: delete up     ^ ^                _T_: files only: % -28`Buffer-menu-files-only
-  _~_: modified
-  "
-    ("m" Buffer-menu-mark)
-    ("u" Buffer-menu-unmark)
-    ("U" Buffer-menu-backup-unmark)
-    ("d" Buffer-menu-delete)
-    ("D" Buffer-menu-delete-backwards)
-    ("s" Buffer-menu-save)
-    ("~" Buffer-menu-not-modified)
-    ("x" Buffer-menu-execute)
-    ("b" Buffer-menu-bury)
-    ("g" revert-buffer)
-    ("T" Buffer-menu-toggle-files-only)
-    ("O" Buffer-menu-multi-occur :color blue)
-    ("I" Buffer-menu-isearch-buffers :color blue)
-    ("R" Buffer-menu-isearch-buffers-regexp :color blue)
-    ("c" nil "cancel")
-    ("v" Buffer-menu-select "select" :color blue)
-    ("o" Buffer-menu-other-window "other-window" :color blue)
-    ("q" quit-window "quit" :color blue))
+    (use-package hydra
+      :defer t)
+    (defhydra hydra-buffer-menu (:color pink
+                                        :hint nil)
+       "
+    ^Mark^             ^Unmark^           ^Actions^          ^Search
+    ^^^^^^^^-----------------------------------------------------------------
+    _m_: mark          _u_: unmark        _x_: execute       _R_: re-isearch
+    _s_: save          _U_: unmark up     _b_: bury          _I_: isearch
+    _d_: delete        ^ ^                _g_: refresh       _O_: multi-occur
+    _D_: delete up     ^ ^                _T_: files only: % -28`Buffer-menu-files-only
+    _~_: modified
+    "
+      ("m" Buffer-menu-mark)
+      ("u" Buffer-menu-unmark)
+      ("U" Buffer-menu-backup-unmark)
+      ("d" Buffer-menu-delete)
+      ("D" Buffer-menu-delete-backwards)
+      ("s" Buffer-menu-save)
+      ("~" Buffer-menu-not-modified)
+      ("x" Buffer-menu-execute)
+      ("b" Buffer-menu-bury)
+      ("g" revert-buffer)
+      ("T" Buffer-menu-toggle-files-only)
+      ("O" Buffer-menu-multi-occur :color blue)
+      ("I" Buffer-menu-isearch-buffers :color blue)
+      ("R" Buffer-menu-isearch-buffers-regexp :color blue)
+      ("c" nil "cancel")
+      ("v" Buffer-menu-select "select" :color blue)
+      ("o" Buffer-menu-other-window "other-window" :color blue)
+      ("q" quit-window "quit" :color blue))
 
-  (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
+    (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
 
 #+end_src
 
@@ -376,7 +381,7 @@ We can further use the following config to allow us move between windown with =s
     (wgw/org-font-setup))
 
   (use-package org-bullets
-    :after org
+    ;;:after org
     :hook (org-mode . org-bullets-mode)
     :custom
     (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
@@ -392,28 +397,29 @@ We can further use the following config to allow us move between windown with =s
 
 ** Babel Configuration
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-(org-babel-do-load-languages
-  'org-babel-load-languages
-  '((emacs-lisp . t)
-    (python . t)))
+  (with-eval-after-load 'org
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t))))
 
-(require 'org-tempo)
-
-(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("elconf" . "src emacs-lisp :tangle ./init.el :mkdirp yes"))
-(add-to-list 'org-structure-template-alist '("py" . "src python"))
+  (with-eval-after-load 'org
+    (require 'org-tempo)
+    (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    (add-to-list 'org-structure-template-alist '("elconf" . "src emacs-lisp :tangle ./init.el :mkdirp yes"))
+    (add-to-list 'org-structure-template-alist '("py" . "src python")))
 #+end_src
 
 ** Org tangle Configuration
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
-(defun wgw/org-babel-tangle-config ()
-  (when (string-equal (buffer-file-name)
-                      (expand-file-name "~/.emacs.d/Emacs.org"))
-    ;; Dynamic scoping to the rescue
-    (let ((org-confirm-babel-evaluate nil))
-      (org-babel-tangle))))
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'wgw/org-babel-tangle-config)))
+  (defun wgw/org-babel-tangle-config ()
+    (when (string-equal (buffer-file-name)
+                        (expand-file-name "~/.emacs.d/Emacs.org"))
+      ;; Dynamic scoping to the rescue
+      (let ((org-confirm-babel-evaluate nil))
+        (org-babel-tangle))))
+  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'wgw/org-babel-tangle-config)))
 #+end_src
 
 ** Htmlize for better html rendering
@@ -643,13 +649,14 @@ Python Language server and =lsp-python-ms= have been archived and are now replac
   (use-package python-mode
     :ensure t
     ;:hook (python-mode . lsp)
+    :after python
     :custom
     ;; NOTE: Set these if Python 3 is called "python3" on your system!
     ((python-shell-interpreter "ipython")
      (python-shell-interpreter-args "-i --simple-prompt")     
      )
     :config (add-to-list 'python-shell-completion-native-disabled-interpreters
-             "ipython")
+              "ipython")
     ;; (dap-python-executable "python3")
     ;(dap-python-debugger 'debugpy)
     ;:config
