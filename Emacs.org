@@ -536,8 +536,9 @@ Then we set =aspell= to be used by =ispell=.
 
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (use-package yasnippet
+    :init (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
     :config (yas-reload-all)
-    (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+    ;;(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
     (add-hook 'python-mode-hook 'yas-minor-mode)
     (add-hook 'ess-mode-hook 'yas-minor-mode)
     (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
@@ -723,6 +724,7 @@ Use [[https://github.com/necaris/conda.el][=conda.el=]] to manage virtual enviro
 
 
 ** AucTex
+
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
 (use-package auctex
   :hook  (LaTeX-mode . flyspell-mode)
@@ -747,3 +749,10 @@ Use [[https://github.com/necaris/conda.el][=conda.el=]] to manage virtual enviro
   )
 #+End_src
  
+
+* Web Development
+
+** yaml
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+  (use-package yaml-mode)
+#+end_src

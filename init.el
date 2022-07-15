@@ -342,8 +342,9 @@ _~_: modified
 (setq-default ispell-program-name "aspell")
 
 (use-package yasnippet
+  :init (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
   :config (yas-reload-all)
-  (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+  ;;(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
   (add-hook 'python-mode-hook 'yas-minor-mode)
   (add-hook 'ess-mode-hook 'yas-minor-mode)
   (add-hook 'LaTeX-mode-hook 'yas-minor-mode)
@@ -472,3 +473,5 @@ _~_: modified
   (setq TeX-source-correlate-mode t)
   (setq TeX-source-correlate-start-server t)
   )
+
+(use-package yaml-mode)
