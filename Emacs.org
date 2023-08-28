@@ -47,7 +47,7 @@ If you want to make sure a package gets loaded at startup despite the use of any
 (use-package auto-package-update
   :if (not (daemonp))
   :custom
-  (auto-package-update-interval 90) ;; in days
+  (auto-package-update-interval 180) ;; in days
   (auto-package-update-prompt-before-update t)
   (auto-package-update-delete-old-versions t)
   (auto-package-update-hide-results t)
@@ -138,7 +138,10 @@ If you want to make sure a package gets loaded at startup despite the use of any
   ;; display correctly:
   ;;
   ;; M-x all-the-icons-install-fonts
-  (use-package all-the-icons)
+  ;;(use-package all-the-icons)
+  ;; <2023-08-28 Mon> switch to nerd-icons since it's better supported now
+  ;;M-x nerd-icons-install-fonts
+  (use-package nerd-icons)
 
   (use-package doom-modeline
     :ensure t
@@ -378,6 +381,7 @@ We can further use the following config to allow us move between windown with =s
     :hook (org-mode . wgw/org-mode-setup)
     :config
     (setq org-ellipsis " ▾")
+    (setq org-image-actual-width nil)
     (wgw/org-font-setup))
 
   (use-package org-bullets
@@ -443,8 +447,12 @@ We can further use the following config to allow us move between windown with =s
 
   (use-package dired-single)
 
-  (use-package all-the-icons-dired
-    :hook (dired-mode . all-the-icons-dired-mode))
+  ;; (use-package all-the-icons-dired
+  ;;   :hook (dired-mode . all-the-icons-dired-mode))
+  ;; <2023-08-28 Mon> switch to nerg icons
+  (use-package nerd-icons-dired
+    :hook (dired-mode . nerd-icons-dired-mode))
+
 #+end_src
 
 * Development Tools
@@ -690,7 +698,7 @@ It looks like all the functionality provided by pyvenv can be found in =conda.el
     (setq eir-repl-placement 'right)
     (require 'eval-in-repl-python)
     (add-hook 'python-mode-hook
-            '(lambda ()
+            (lambda ()
                (local-set-key (kbd "<C-return>") 'eir-eval-in-python))))
 #+end_src
 

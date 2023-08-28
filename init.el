@@ -19,7 +19,7 @@
 (use-package auto-package-update
   :if (not (daemonp))
   :custom
-  (auto-package-update-interval 90) ;; in days
+  (auto-package-update-interval 180) ;; in days
   (auto-package-update-prompt-before-update t)
   (auto-package-update-delete-old-versions t)
   (auto-package-update-hide-results t)
@@ -84,7 +84,10 @@
 ;; display correctly:
 ;;
 ;; M-x all-the-icons-install-fonts
-(use-package all-the-icons)
+;;(use-package all-the-icons)
+;; <2023-08-28 Mon> switch to nerd-icons since it's better supported now
+;;M-x nerd-icons-install-fonts
+(use-package nerd-icons)
 
 (use-package doom-modeline
   :ensure t
@@ -224,6 +227,7 @@ _~_: modified
   :hook (org-mode . wgw/org-mode-setup)
   :config
   (setq org-ellipsis " ▾")
+  (setq org-image-actual-width nil)
   (wgw/org-font-setup))
 
 (use-package org-bullets
@@ -276,8 +280,11 @@ _~_: modified
 
 (use-package dired-single)
 
-(use-package all-the-icons-dired
-  :hook (dired-mode . all-the-icons-dired-mode))
+;; (use-package all-the-icons-dired
+;;   :hook (dired-mode . all-the-icons-dired-mode))
+;; <2023-08-28 Mon> switch to nerg icons
+(use-package nerd-icons-dired
+  :hook (dired-mode . nerd-icons-dired-mode))
 
 (defun wgw/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
@@ -434,7 +441,7 @@ _~_: modified
   (setq eir-repl-placement 'right)
   (require 'eval-in-repl-python)
   (add-hook 'python-mode-hook
-          '(lambda ()
+          (lambda ()
              (local-set-key (kbd "<C-return>") 'eir-eval-in-python))))
 
 (use-package conda
