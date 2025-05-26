@@ -27,7 +27,7 @@
   (auto-package-update-maybe))
 
 (setq user-full-name "Guangwei Weng"
-      user-mail-address "wengx076@umn.edu")
+      user-mail-address "weng.gw@outlook.com")
 (server-start)
 
 ;; Add exec-path-from-shell to ensure Emacs started from Mac App (homebrew Cask)
@@ -47,7 +47,7 @@
       `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 
 (setq inhibit-startup-message nil)        ; Remove all startup message
-(scroll-bar-mode -1)        ; Disable visible scrollbar
+;;(scroll-bar-mode -1)        ; Disable visible scrollbar
 (tool-bar-mode -1)          ; Disable the toolbar
 (tooltip-mode -1)           ; Disable tooltips
 (set-fringe-mode 10)        ; Give some breathing room
@@ -267,45 +267,47 @@ _~_: modified
 
 (use-package htmlize)
 
+(use-package org-download
+  :after org
+  :bind
+  (:map org-mode-map
+        (("s-Y" . org-download-screenshot)
+         ("s-y" . org-download-yank))))
+
 (use-package org-roam
-  :ensure t
-  :init
-  (setq org-roam-v2-ack t)
-  :custom 
-  (org-roam-directory "/Users/wgw/Dropbox/RoamNotes")
-  (org-roam-completion-everywhere t)
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n i" . org-roam-node-insert)
-         :map org-mode-map
-         ("C-M-i" . completion-at-point)
-         :map org-roam-dailies-map
-         ("Y" . org-roam-dailies-capture-yesterday)
-         ("T" . org-roam-dailies-capture-tomorrow))
-  :bind-keymap
-  ("C-c n d" . org-roam-dailies-map)
-  :config
-  (require 'org-roam-dailies) ;; Ensure the keymap is available
-  (org-roam-db-autosync-mode))
+    :ensure t
+    :init
+    (setq org-roam-v2-ack t)
+    :custom 
+    (org-roam-directory "/Users/wgw/Library/CloudStorage/Dropbox/RoamNotes")
+    (org-roam-completion-everywhere t)
+      (org-roam-capture-templates
+   '(("d" "default" plain
+      "%?"
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
+      :unnarrowed t)))
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert)
+           ("C-c n g" . org-roam-graph)
+           ("C-c n c" . org-roam-capture)
+           :map org-mode-map
+           ("C-M-i" . completion-at-point)
+           :map org-roam-dailies-map
+           ("Y" . org-roam-dailies-capture-yesterday)
+           ("T" . org-roam-dailies-capture-tomorrow))
+    :bind-keymap
+    ("C-c n d" . org-roam-dailies-map)
+    :config
+    (org-roam-setup)
+    (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+    (require 'org-roam-dailies) ;; Ensure the keymap is available
+    (require 'org-roam-export)
+    (org-roam-db-autosync-mode))
 
-(use-package dired
-  :ensure nil
-  :commands (dired dired-jump)
-  :bind (("C-x C-j" . dired-jump))
-  ;;:custom ((dired-listing-switches "-agho --group-directories-first"))
-  ;; :config
-  ;; (evil-collection-define-key 'normal 'dired-mode-map
-  ;;   "h" 'dired-single-up-directory
-  ;;   "l" 'dired-single-buffer)
-  )
-
-(use-package dired-single)
-
-;; (use-package all-the-icons-dired
-;;   :hook (dired-mode . all-the-icons-dired-mode))
-;; <2023-08-28 Mon> switch to nerg icons
-(use-package nerd-icons-dired
-  :hook (dired-mode . nerd-icons-dired-mode))
+  (use-package ox-jekyll-md)
+;; This add  extra options of converstion org file to jekyll posts
+;; in markdown format.
 
 (defun wgw/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
@@ -470,16 +472,6 @@ _~_: modified
   ;;        (conda-env-initialize-eshell))
   :custom ((conda-anaconda-home "/opt/homebrew/Caskroom/miniforge/base/")))
 
-(use-package ein
-  :defer t
-  :config (require 'ein)
-  (setq ein:completion-backend 'ein:use-company-jedi-backend)
-  (require 'ein-loaddefs)
-  (require 'ein-notebook)
-  (require 'ein-subpackages)
-  )
-(use-package markdown-mode)
-
 (use-package auctex
   :hook  (LaTeX-mode . flyspell-mode)
   :init
@@ -503,3 +495,16 @@ _~_: modified
   )
 
 (use-package yaml-mode)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(taxy-magit-section yasnippet yaml-mode window-numbering which-key visual-fill-column use-package smart-mode-line scala-mode rainbow-delimiters pyvenv python-mode poly-R page-break-lines ox-jekyll-md org-roam org-download org-bullets no-littering nerd-icons-dired neotree miniedit magit lsp-ui lsp-treemacs lsp-python-ms lsp-pyright lsp-ivy jupyter ivy-rich htmlize highlight-indent-guides helpful hc-zenburn-theme git-commit general exec-path-from-shell evil eval-in-repl eshell-git-prompt ein doom-themes doom-modeline discover-my-major dashboard counsel-projectile conda company-box company-anaconda centaur-tabs auto-package-update auto-compile auctex all-the-icons-dired)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

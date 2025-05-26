@@ -58,7 +58,7 @@ If you want to make sure a package gets loaded at startup despite the use of any
 * Basic Config
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (setq user-full-name "Guangwei Weng"
-        user-mail-address "wengx076@umn.edu")
+        user-mail-address "weng.gw@outlook.com")
   (server-start)
 
   ;; Add exec-path-from-shell to ensure Emacs started from Mac App (homebrew Cask)
@@ -67,7 +67,7 @@ If you want to make sure a package gets loaded at startup despite the use of any
     :config (exec-path-from-shell-initialize))
 #+end_src
 
-** Keep Folders Clearn
+** Keep Folders Clean
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
 ;; NOTE: If you want to move everything out of the ~/.emacs.d folder
 ;; reliably, set `user-emacs-directory` before loading no-littering!
@@ -86,7 +86,7 @@ If you want to make sure a package gets loaded at startup despite the use of any
 
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (setq inhibit-startup-message nil)        ; Remove all startup message
-  (scroll-bar-mode -1)        ; Disable visible scrollbar
+  ;;(scroll-bar-mode -1)        ; Disable visible scrollbar
   (tool-bar-mode -1)          ; Disable the toolbar
   (tooltip-mode -1)           ; Disable tooltips
   (set-fringe-mode 10)        ; Give some breathing room
@@ -220,7 +220,7 @@ If you want to make sure a package gets loaded at startup despite the use of any
     :init (window-numbering-mode 1))
 #+end_src
 
-We can further use the following config to allow us move between windown with =shift= + arrow keys.
+We can further use the following config to allow us move between windows with =shift= + arrow keys.
 
 #+begin_src emacs-lisp
 (progn
@@ -440,6 +440,18 @@ See the following two links for more details and themes:
 - https://github.com/fniessen/org-html-themes
 - https://olmon.gitlab.io/org-themes/
 
+** Org-download
+This allows you to directly drag a image to the org mode buffer.
+#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+(use-package org-download
+  :after org
+  :bind
+  (:map org-mode-map
+        (("s-Y" . org-download-screenshot)
+         ("s-y" . org-download-yank))))
+#+end_src
+
+*** TODO Set image download path
 ** Org Roam
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
   (use-package org-roam
@@ -447,11 +459,18 @@ See the following two links for more details and themes:
     :init
     (setq org-roam-v2-ack t)
     :custom 
-    (org-roam-directory "/Users/wgw/Dropbox/RoamNotes")
+    (org-roam-directory "/Users/wgw/Library/CloudStorage/Dropbox/RoamNotes")
     (org-roam-completion-everywhere t)
+      (org-roam-capture-templates
+   '(("d" "default" plain
+      "%?"
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
+      :unnarrowed t)))
     :bind (("C-c n l" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
            ("C-c n i" . org-roam-node-insert)
+           ("C-c n g" . org-roam-graph)
+           ("C-c n c" . org-roam-capture)
            :map org-mode-map
            ("C-M-i" . completion-at-point)
            :map org-roam-dailies-map
@@ -460,15 +479,62 @@ See the following two links for more details and themes:
     :bind-keymap
     ("C-c n d" . org-roam-dailies-map)
     :config
+    (org-roam-setup)
+    (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
     (require 'org-roam-dailies) ;; Ensure the keymap is available
+    (require 'org-roam-export)
     (org-roam-db-autosync-mode))
 
-
+  (use-package ox-jekyll-md)
+;; This add  extra options of converstion org file to jekyll posts
+;; in markdown format.  
 #+end_src
+
+*** Org Roam template
+**** Understanding the default Org Roam template
+#+begin_src emacs-lisp
+'(("d" "default" plain
+   "%?"
+   :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+   :unnarrowed t))
+#+end_src
+
+Here’s what it contains:
+
+- ="d"= : The “key”, a letter that you press to choose the template
+- ="default"= : The full name of the template
+- =plain= : The type of text being inserted, always this value for note templates
+- ="%?"= : This is the text that will be inserted into the new note, can be anything!
+- =:if-new= : The list that follows this describes how the note file will be created
+- =:unnarrowed t= : Ensures that the full file will be displayed when captured (an Org thing)
+
+**** Storing templates in Org files
+Let’s talk about how you can write your capture templates in real Org files so that you don’t have to edit strings inside of your Emacs configuration.
+
+#+begin_src emacs-lisp
+("b" "book notes" plain (file "~/RoamNotes/Templates/BookNoteTemplate.org")
+ :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+ :unnarrowed t)
+#+end_src
+
+**** Customizing the default template
+
+You can also customize the default template!
+
+Let’s try to insert the date when the note was created. We can do this by adding the string =#+date: %U= to the initial header string in the =file+head= configuration:
+
+#+begin_src emacs-lisp
+("d" "default" plain "%?"
+ :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
+ :unnarrowed t)
+#+end_src
+
+
+Check out [Org-mode Template expansion](https://orgmode.org/manual/Template-expansion.html) for more template placeholders.
 * File Management
 ** Dired
 
-#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+#+begin_src emacs-lisp 
   (use-package dired
     :ensure nil
     :commands (dired dired-jump)
@@ -753,7 +819,7 @@ Use [[https://github.com/necaris/conda.el][=conda.el=]] to manage virtual enviro
 (use-package jupyter)
 #+end_src
 *** EIN
-#+begin_src emacs-lisp :tangle ./init.el :mkdirp yes
+#+begin_src emacs-lisp 
   (use-package ein
     :defer t
     :config (require 'ein)
