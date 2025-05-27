@@ -274,38 +274,138 @@ _~_: modified
         (("s-Y" . org-download-screenshot)
          ("s-y" . org-download-yank))))
 
-(use-package org-roam
-    :ensure t
-    :init
-    (setq org-roam-v2-ack t)
-    :custom 
-    (org-roam-directory "/Users/wgw/Library/CloudStorage/Dropbox/RoamNotes")
-    (org-roam-completion-everywhere t)
-      (org-roam-capture-templates
-   '(("d" "default" plain
-      "%?"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
-      :unnarrowed t)))
-    :bind (("C-c n l" . org-roam-buffer-toggle)
-           ("C-c n f" . org-roam-node-find)
-           ("C-c n i" . org-roam-node-insert)
-           ("C-c n g" . org-roam-graph)
-           ("C-c n c" . org-roam-capture)
-           :map org-mode-map
-           ("C-M-i" . completion-at-point)
-           :map org-roam-dailies-map
-           ("Y" . org-roam-dailies-capture-yesterday)
-           ("T" . org-roam-dailies-capture-tomorrow))
-    :bind-keymap
-    ("C-c n d" . org-roam-dailies-map)
-    :config
-    (org-roam-setup)
-    (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
-    (require 'org-roam-dailies) ;; Ensure the keymap is available
-    (require 'org-roam-export)
-    (org-roam-db-autosync-mode))
+;; ─── Ensure MoC structure ───
+(defvar my/org-roam-root
+  "/Users/wgw/Library/CloudStorage/Dropbox/RoamNotes"
+  "Root directory for my Org-Roam files.")
 
-  (use-package ox-jekyll-md)
+(defvar my/moc-dir
+  (expand-file-name "mocs/" my/org-roam-root)
+  "Directory where per-domain MoC files live.")
+
+(defvar my/moc-file
+  (expand-file-name "00-index.org" my/org-roam-root)
+  "Master MoC index file.")
+
+(unless (file-directory-p my/moc-dir)
+  (message "Creating MoC dir %s" my/moc-dir)
+  (make-directory my/moc-dir t))
+(unless (file-exists-p my/moc-file)
+  (message "Creating master MoC %s" my/moc-file)
+  (with-temp-file my/moc-file
+    (insert "#+title: Master Index\n\n* Unsorted\n")))
+
+(defun my/ensure-and-insert-into-moc (heading link)
+  "Ensure HEADING exists in master MoC, then append LINK under it."
+  (with-current-buffer (find-file-noselect my/moc-file)
+    (goto-char (point-min))
+    (unless (re-search-forward (format "^*+ %s" (regexp-quote heading)) nil t)
+      (goto-char (point-max))
+      (insert (format "\n* %s\n" heading)))
+    (goto-char (point-min))
+    (re-search-forward (format "^*+ %s" (regexp-quote heading)) nil t)
+    (forward-line)
+    (insert (format "** %s\n" link))
+    (save-buffer)))
+
+(defun my/roam-moc-on-filetags-save ()
+  "After saving an Org-Roam file, sync its #+filetags: into the master MoC."
+  (when (and (eq major-mode 'org-mode)
+             (string-prefix-p my/org-roam-root (buffer-file-name)))
+    ;; find #+filetags: line
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward "^#\\+filetags:[ \t]*\\(.+\\)$" nil t)
+        (let* ((tags (split-string (match-string 1) "[: \t]+" t))
+               (node (org-roam-node-at-point))
+               (id   (org-roam-node-id node))
+               (title (org-roam-node-title node))
+               (link (format "[[id:%s][%s]]" id title)))
+          ;; purge old entries for this note
+          (with-current-buffer (find-file-noselect my/moc-file)
+            (goto-char (point-min))
+            ;; Loop over every occurrence of this note’s ID
+            (while (re-search-forward (format "^\\*\\* .*\\[\\[id:%s\\]" id) nil t)
+              (let* ((entry-beg (match-beginning 0))
+                     ;; Find the parent heading of this entry
+                     (heading-beg (save-excursion
+                                    (org-back-to-heading t)
+                                    (point)))
+                     ;; Determine end of that subtree
+                     (subtree-end (save-excursion
+                                    (goto-char heading-beg)
+                                    (org-end-of-subtree t t)
+                                    (point))))
+                ;; 1) Kill the entry line
+                (goto-char entry-beg)
+                (kill-whole-line)
+                ;; 2) If no other “** ” lines remain under that heading, remove the whole subtree
+                (save-excursion
+                  (goto-char heading-beg)
+                  (let ((has-child (re-search-forward "^\\*\\* " subtree-end t)))
+                    (unless has-child
+                      ;; remove heading + any blank lines below
+                      (goto-char heading-beg)
+                      (org-cut-subtree))))
+                (save-buffer))
+              ;; insert under each tag heading
+              (dolist (tag tags)
+                (my/ensure-and-insert-into-moc
+                 (capitalize (replace-regexp-in-string "_" " " tag))
+                 link))
+              )))))
+
+    (add-hook 'after-save-hook #'my/roam-moc-on-filetags-save)
+
+(use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-v2-ack t)
+  :custom 
+  (org-roam-directory my/org-roam-root)
+  (org-roam-completion-everywhere t)
+  (org-roam-capture-templates
+   '(("d" "default" plain "%?"
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                         "#+title: ${title}\n#+date: %U\n#+filetags: :${tag}:\n\n")
+      :immediate-finish t
+      :unnarrowed t)))
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n g" . org-roam-graph)
+         ("C-c n c" . org-roam-capture)
+         :map org-mode-map
+         ("C-M-i" . completion-at-point)
+         :map org-roam-dailies-map
+         ("Y" . org-roam-dailies-capture-yesterday)
+         ("T" . org-roam-dailies-capture-tomorrow))
+  :bind-keymap
+  ("C-c n d" . org-roam-dailies-map)
+  :config
+  (org-roam-setup)
+  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  (require 'org-roam-dailies) ;; Ensure the keymap is available
+  (require 'org-roam-export)
+  (org-roam-db-autosync-mode)
+  (defun my/roam-moc-after-capture (info)
+    "Index every new Org-Roam capture in the master MoC by its #+filetags:."
+    (let* ((node  (org-roam-node-from-info info))
+           (tags  (org-roam-node-file-tags node))
+           (id    (org-roam-node-id node))
+           (title (org-roam-node-title node))
+           (link  (format "[[id:%s][%s]]" id title)))
+      (when tags
+        (with-current-buffer (find-file-noselect my/moc-file)
+          ;; for each tag, ensure link exists
+          (dolist (tag tags)
+            (my/ensure-and-insert-into-moc
+             (capitalize (replace-regexp-in-string "_" " " tag))
+             link))))))
+  (add-hook 'org-roam-capture-after-finalize-hook #'my/roam-moc-after-capture)
+  ) 
+
+(use-package ox-jekyll-md)
 ;; This add  extra options of converstion org file to jekyll posts
 ;; in markdown format.
 
@@ -495,16 +595,3 @@ _~_: modified
   )
 
 (use-package yaml-mode)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(taxy-magit-section yasnippet yaml-mode window-numbering which-key visual-fill-column use-package smart-mode-line scala-mode rainbow-delimiters pyvenv python-mode poly-R page-break-lines ox-jekyll-md org-roam org-download org-bullets no-littering nerd-icons-dired neotree miniedit magit lsp-ui lsp-treemacs lsp-python-ms lsp-pyright lsp-ivy jupyter ivy-rich htmlize highlight-indent-guides helpful hc-zenburn-theme git-commit general exec-path-from-shell evil eval-in-repl eshell-git-prompt ein doom-themes doom-modeline discover-my-major dashboard counsel-projectile conda company-box company-anaconda centaur-tabs auto-package-update auto-compile auctex all-the-icons-dired)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
