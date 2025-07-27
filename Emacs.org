@@ -541,6 +541,7 @@ This allows you to directly drag a image to the org mode buffer.
                 )))))
 
       (add-hook 'after-save-hook #'my/roam-moc-on-filetags-save)
+      ))
 #+end_src
 
 #+begin_src emacs-lisp :tangle ./init.el :mkdirp yes

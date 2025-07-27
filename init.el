@@ -356,6 +356,7 @@ _~_: modified
               )))))
 
     (add-hook 'after-save-hook #'my/roam-moc-on-filetags-save)
+    ))
 
 (use-package org-roam
   :ensure t
